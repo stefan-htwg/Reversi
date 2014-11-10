@@ -14,7 +14,7 @@ class ReversiTui(controller: Controller) extends Reactor {
       var input = ""
       var max_rows = 6;
       var max_cols = 7;
-      var reversi = new Reversi()
+      var reversi = new ReversiModel()
 
       reversi.doreset(1);
 

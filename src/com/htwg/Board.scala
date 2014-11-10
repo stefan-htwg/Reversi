@@ -12,25 +12,7 @@ class Board(max_cols:Int, max_rows:Int) {
   def setCell(cell:Cell): Unit = {
     _cells(cell.col)(cell.row) = cell
   }
-  
-  def nextPlayer() {
-    if(player==1) {
-      player=2
-    }else{
-      player=1
-    }    
-  }
-  
-  def add(col: Int): Boolean = {
-    var row  = findEmpty(col)
-    if(row>(-1) && row<max_rows) {
-      _cells(col)(row) = new Cell(col,row,player)
-      nextPlayer()
-      return true
-    }
-    false
-  }
-  
+ 
   def findEmpty(col:Int):Integer = {
 	  if(col>=max_cols) return -1
     
