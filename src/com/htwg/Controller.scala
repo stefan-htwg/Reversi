@@ -14,7 +14,7 @@ class Controller(var board: Board) extends Publisher{
     {
 	  // TODO check bounds
     
-	  board.setCell(col, row, new Cell(col, row, board.player)) 
+	  board.setCell(new Cell(col, row, board.player)) 
 	  
 	  publish(new BoardChanged)
     }

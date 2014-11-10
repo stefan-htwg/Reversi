@@ -9,8 +9,8 @@ class Board(max_cols:Int, max_rows:Int) {
   def cells = _cells
 
   // Setter 
-  def setCell(col: Int, row: Int, cell:Cell): Unit = {
-    _cells(col)(row) = cell
+  def setCell(cell:Cell): Unit = {
+    _cells(cell.col)(cell.row) = cell
   }
   
   def nextPlayer() {

@@ -23,7 +23,7 @@ class Reversi {
 
   def doreset(firstmove: Int) {
     for (column <- 0 until max_cols; row <- 0 until max_rows) {
-      board.cells(column)(row) = new Cell(column, row)
+      board.setCell(new Cell(column, row))
     }
 
     board.cells(3)(3).set(1);
