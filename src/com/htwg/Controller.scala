@@ -23,27 +23,3 @@ class Controller(var board: Board) extends Publisher{
   
   def getCurrentPlayer = board.player 
 }
-
-class Model(){
-  
-}
-
-class View(controller: Controller) extends Frame{
-	listenTo(controller)
-	
-	reactions += {
-	  case e: BoardChanged => println("Changed")
-	}
-}
-/*
-class Game12(){
-  
-  var board = new Board(8, 8)
-  var controller = new Controller(board)
-  var view = new View(controller)
-  
-  def main(args: Array[String])
-  {
-    view.open
-  }
-}*/
