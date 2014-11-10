@@ -300,5 +300,8 @@ var highy=0
   def clickat(x: Int, y: Int) {
     domove(x, y, whoseturn);
   }
+  
+  def getPlayer() = whoseturn
+  
 
 }
