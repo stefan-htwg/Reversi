@@ -5,20 +5,6 @@ class Board(max_cols:Int, max_rows:Int) {
   private val _cells = Array.ofDim[Cell](max_cols,max_rows)
   var player : Int =1;
   
-  /*
-  var rows = new Array[CellMap](max_rows)
-  var columns = new Array[CellMap](max_cols)
-
-    for (index <- 0 until 5) {
-      rows(index) = new CellMap(max_cols)
-      columns(index) = new CellMap(max_rows)
-    }
-    columns(6) = new CellMap(max_rows)
-
-    for (column <- 0 until max_cols; row <- 0 until max_rows) {
-      //board.cells(column)(row) = new Cell(column,row)
-    }*/
-  
    // Getter 
   def cells = _cells
 
