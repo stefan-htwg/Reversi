@@ -1,14 +1,9 @@
 package com.htwg
 
-class MaxMove(
-  val x: Int = 0,
-  val y: Int = 0,
-  val s: Int = 0)
-
 class ReversiModel {
 
-  var max_cols = 8
-  var max_rows = 8
+  val max_cols = 8
+  val max_rows = 8
 
   var board = new Board(max_cols, max_rows)
 

@@ -12,11 +12,10 @@ class ReversiTui(controller: Controller) extends Reactor {
   def open: Unit =
     {
       var input = ""
-      var max_rows = 6;
-      var max_cols = 7;
       var reversi = new ReversiModel()
+      var startWithPlayer=1 //1 OR 2
 
-      reversi.doreset(1);
+      reversi.doreset(startWithPlayer);
 
       print(reversi.board.toSting())
 
@@ -27,6 +26,19 @@ class ReversiTui(controller: Controller) extends Reactor {
           case "q" => {
             println("Game stoped!")
             return
+          }
+          case "r" => {
+            println("Game reset!")
+            reversi.doreset(startWithPlayer);
+            print(reversi.board.toSting())            
+          }
+          case "s1" => {
+            println("s1")
+            startWithPlayer=1
+          }
+          case "s2" => {
+            println("s2")
+            startWithPlayer=2
           }
           case _ => {
             println("input!")
