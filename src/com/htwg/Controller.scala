@@ -8,18 +8,19 @@ case class BoardChanged() extends Event
 
 class Controller(var board: Board) extends Publisher{
   
-  var currentPlayer = 1; 
+  var reversi = new Reversi()
+  reversi.doreset(1);
   
   def setCell(col: Integer, row: Integer) = 
     {
 	  // TODO check bounds
     
-	  board.setCell(col, row, new Cell(col, row, board.player)) 
+	  reversi.clickat(col, row) 
 	  
 	  publish(new BoardChanged)
     }
   
-  def getValueAt(column : Integer, row : Integer) = board.cells(column)(row).value
+  def getValueAt(column : Integer, row : Integer) = reversi.board.cells(column)(row).value
   
-  def getCurrentPlayer = board.player 
+  def getCurrentPlayer = reversi.board.player 
 }

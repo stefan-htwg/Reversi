@@ -8,8 +8,8 @@ class ReversiTui(controller: Controller) extends Reactor {
   reactions += {
     case e: BoardChanged => println("Changed")
   }
-
-  def open: Unit =
+  
+  def startup(args: Array[String]): Unit =
     {
       var input = ""
       var max_rows = 6;
