@@ -2,8 +2,8 @@ package com.htwg
 
 object GameMVC {
   
-  var board = new Board(8, 8)
-  var controller = new Controller(board)
+  var model = new ReversiModel();
+  var controller = new Controller(model)
   
   
   var view = new ReversiGui(controller)

@@ -1,14 +1,9 @@
 package com.htwg
 
-class MaxMove(
-  val x: Int = 0,
-  val y: Int = 0,
-  val s: Int = 0)
+class ReversiModel {
 
-class Reversi {
-
-  var max_cols = 8
-  var max_rows = 8
+  val max_cols = 8
+  val max_rows = 8
 
   var board = new Board(max_cols, max_rows)
 
@@ -17,10 +12,13 @@ class Reversi {
   var sqwhite = 2
   var sqblank = 0
   var debugMode = false
+  var compwhite =false;
+  var compblack =false;
+  
 
   def doreset(firstmove: Int) {
     for (column <- 0 until max_cols; row <- 0 until max_rows) {
-      board.cells(column)(row) = new Cell(column, row)
+      board.setCell(new Cell(column, row))
     }
 
     board.cells(3)(3).set(1);
@@ -172,7 +170,14 @@ class Reversi {
     if (!(validmovesexist(sqwhite) || validmovesexist(sqblack))) {
       gameover();
     } else {
-      println("nextmove: " + whoseturn)
+      
+      if( iscomputersmove(whoseturn) == true){
+        println("computer move: ")
+        
+        	docomputersmove(whoseturn);           
+        }else{
+          println("nextmove: "+whoseturn)
+      }
     }
 
   }
@@ -185,7 +190,7 @@ class Reversi {
     if (thiscolor == 2) { thatcolor = 1; }
 
     if (board.cells(x + xoff - 1)(y + yoff - 1).value == thatcolor) {
-      result -= 1;
+      result += 1;
       result += scoreinbetweensdir(x + xoff, y + yoff, xoff, yoff, thiscolor);
     }
     return result;
@@ -244,9 +249,54 @@ class Reversi {
     }
   }
 
+
+def iscomputersmove(test:Int):Boolean ={
+	//if whoseturn is computer's move return true
+	
+	if(compwhite==true && test == sqwhite){return true;}
+	if(compblack==true && test == sqblack){return true;}
+	
+	return false;
+}
+  
+def docomputersmove(icol:Int){
+var highscore=0.0
+var lowscore=0.0
+var lowx=0
+var lowy=0
+
+var highx=0
+var highy=0
+  
+     for (i <- 1 to 8; j <- 1 to 8){
+            var currscore = getvalue(i,j,icol);
+            
+            if(currscore > highscore){
+                highx=i;
+                highy=j;
+                highscore = currscore;
+            }
+            
+           
+            if(currscore>0 && (lowscore ==0.0 || currscore < highscore)){
+            	lowx=i;
+                lowy=j;
+                lowscore = currscore;
+            }
+            
+        }
+    
+
+    println("cp move:"+highx+"/"+highy);
+    domove(highx,highy,icol)  
+}
+  
   //register click on the board.
   def clickat(x: Int, y: Int) {
     domove(x, y, whoseturn);
   }
+  
+  def getPlayer() = whoseturn
+  
 
 }

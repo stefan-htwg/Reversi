@@ -12,13 +12,12 @@ class ReversiTui(controller: Controller) extends Reactor {
   def startup(args: Array[String]): Unit =
     {
       var input = ""
-      var max_rows = 6;
-      var max_cols = 7;
-      var reversi = new Reversi()
+      var reversi = new ReversiModel()
+      var startWithPlayer=1 //1 OR 2
 
-      reversi.doreset(1);
+      reversi.doreset(startWithPlayer);
 
-      print(reversi.board.toSting())
+      print(reversi.board.toString())
 
       while (true) {
         input = readLine();
@@ -28,13 +27,26 @@ class ReversiTui(controller: Controller) extends Reactor {
             println("Game stoped!")
             return
           }
+          case "r" => {
+            println("Game reset!")
+            reversi.doreset(startWithPlayer);
+            print(reversi.board.toString())            
+          }
+          case "s1" => {
+            println("s1")
+            startWithPlayer=1
+          }
+          case "s2" => {
+            println("s2")
+            startWithPlayer=2
+          }
           case _ => {
             println("input!")
             input.toList.filter(c => c != ' ').map(c => c.toString.toInt) match {
               case column :: row :: Nil => {
                 println("column/row: " + column + "/" + row)
                 reversi.clickat(column, row)
-                print(reversi.board.toSting())
+                print(reversi.board.toString())
               }
               case _ => println("False Input!!!")
 
