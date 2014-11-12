@@ -62,7 +62,5 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
     currentPlayerLabel.repaint
   }
 
-  class Position(val x: Integer, val y: Integer) {
-
-  }
+  class Position(val x: Integer, val y: Integer) 
 }

@@ -8,12 +8,12 @@ class ReversiTui(controller: Controller) extends Reactor {
   reactions += {
     case e: BoardChanged => println("Changed")
   }
-  
+
   def startup(args: Array[String]): Unit =
     {
       var input = ""
       var reversi = new ReversiModel()
-      var startWithPlayer=1 //1 OR 2
+      var startWithPlayer = 1 //1 OR 2
 
       reversi.doreset(startWithPlayer);
 
@@ -30,15 +30,15 @@ class ReversiTui(controller: Controller) extends Reactor {
           case "r" => {
             println("Game reset!")
             reversi.doreset(startWithPlayer);
-            print(reversi.board.toString())            
+            print(reversi.board.toString())
           }
           case "s1" => {
             println("s1")
-            startWithPlayer=1
+            startWithPlayer = 1
           }
           case "s2" => {
             println("s2")
-            startWithPlayer=2
+            startWithPlayer = 2
           }
           case _ => {
             println("input!")
@@ -53,7 +53,6 @@ class ReversiTui(controller: Controller) extends Reactor {
             }
           }
         }
-
       }
     }
 }
