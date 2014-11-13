@@ -12,20 +12,36 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
   var sqwhite = 2
   var sqblank = 0
   var debugMode = false
-  var compwhite = false;
+  var compwhite = true;
   var compblack = false;
 
+  doreset(sqwhite);
+ 
+  def setAt(column: Int, row: Int, value: Int) {
+    getCell(column,row).set(value)
+  }
+  
+  def getAt(column: Int, row: Int) : Int ={
+    getCell(column,row).value 
+  }
+  
+  def getCell(column: Int, row: Int) : Cell ={
+    board.cells(column-1)(row-1) 
+  }
+  
+  def setCell(cell :Cell) {
+    board.setCell(cell); 
+  }
+  
   def doreset(firstmove: Int) {
     for (column <- 0 until max_cols; row <- 0 until max_rows) {
-      board.setCell(new Cell(column, row))
+      setCell(new Cell(column, row,sqblank))
     }
 
-    // TODO default values should not be set here
-    // think about moving it
-    board.cells(3)(3).set(1);
-    board.cells(4)(4).set(1);
-    board.cells(3)(4).set(2);
-    board.cells(4)(3).set(2);
+    setAt(4,4,sqblack)
+    setAt(5,5,sqblack)
+    setAt(4,5,sqwhite)
+    setAt(5,4,sqwhite)
 
     if (firstmove == sqblack)
       whoseturn = sqblack;
@@ -35,6 +51,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     nextmove()
   }
 
+  
   def getscore() {
     val wtscore = calculatescore(sqwhite);
     val bkscore = calculatescore(sqblack);
@@ -43,8 +60,8 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
 
   def calculatescore(icol: Int): Int = {
     var sum = 0;
-    for (column <- 0 until max_cols; row <- 0 until max_rows) {
-      if (board.cells(column)(row).value == icol) {
+    for (column <- 1 to max_cols; row <- 1 to max_rows) {
+      if (getAt(column,row) == icol) {
         sum += 1;
       }
     }
@@ -87,14 +104,14 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
 
       }
 
-      if (board.cells(x + xoff - 1)(y + yoff - 1).value == sqblank) {
+      if (getAt(x + xoff,y + yoff) == sqblank) {
         return false;
       }
 
       //one square of opposite colour before a square of the same colour.
-      if (board.cells(x + xoff - 1)(y + yoff - 1).value == thatcolor &&
+      if (getAt(x + xoff,y + yoff) == thatcolor &&
         (
-          board.cells(x + xoff + xoff - 1)(y + yoff + yoff - 1).value == thiscolor || cancapturedir(x + xoff, y + yoff, xoff, yoff, thiscolor))) {
+          getAt(x + xoff + xoff,y + yoff + yoff) == thiscolor || cancapturedir(x + xoff, y + yoff, xoff, yoff, thiscolor))) {
         return true;
       }
       return false;
@@ -110,7 +127,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
       log("out of bounce");
       return false;
     }
-    if (board.cells(columns - 1)(rows - 1).value != sqblank) {
+    if (getAt(columns,rows) != sqblank) {
       log("not empty");
       return false;
     }
@@ -125,9 +142,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     return true;
   }
 
-  def setsquare(x: Int, y: Int, n: Int) {
-    board.cells(x - 1)(y - 1).set(n)
-  }
+  
 
   def validmovesexist(n: Int): Boolean =
     {
@@ -190,7 +205,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     if (thiscolor == 1) { thatcolor = 2; }
     if (thiscolor == 2) { thatcolor = 1; }
 
-    if (board.cells(x + xoff - 1)(y + yoff - 1).value == thatcolor) {
+    if (getAt(x + xoff,y + yoff) == thatcolor) {
       result += 1;
       result += scoreinbetweensdir(x + xoff, y + yoff, xoff, yoff, thiscolor);
     }
@@ -229,8 +244,8 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
 
     if (thiscolor == 1) { thatcolor = 2; }
     if (thiscolor == 2) { thatcolor = 1; }
-    if (board.cells(x + xoff - 1)(y + yoff - 1).value == thatcolor) {
-      setsquare(x + xoff, y + yoff, thiscolor);
+    if (getAt(x + xoff,y + yoff) == thatcolor) {
+      setAt(x + xoff, y + yoff, thiscolor);
       doinbetweensdir(x + xoff, y + yoff, xoff, yoff, thiscolor);
     }
 
@@ -239,7 +254,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
   def domove(x: Int, y: Int, n: Int) {
 
     if (isvalidmove(x, y, n)) {
-      setsquare(x, y, whoseturn);
+      setAt(x, y, whoseturn);
 
       doinbetweens(x, y, n);
 

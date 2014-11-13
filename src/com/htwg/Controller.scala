@@ -21,4 +21,6 @@ class Controller(var model: ReversiModel) extends Publisher{
   def getValueAt(column : Integer, row : Integer) = model.board.cells(column)(row).value
   
   def getCurrentPlayer = model.getPlayer() 
+  
+  def getModel =  model
 }

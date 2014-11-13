@@ -1,9 +1,7 @@
 package com.htwg
 
 class Board(max_cols:Int, max_rows:Int) {
-
   private val _cells = Array.ofDim[Cell](max_cols,max_rows)
-  var player : Int =1;
   
    // Getter 
   def cells = _cells
@@ -22,8 +20,8 @@ class Board(max_cols:Int, max_rows:Int) {
 	  return -1
 	}
   
-  def toSting(): String = {
-    var ret =""
+  override def toString(): String = {
+     var ret =""
      for (row <- 0 until max_rows; column <- 0 until max_cols) {
       
       if(row==0 && column==0){
@@ -33,7 +31,7 @@ class Board(max_cols:Int, max_rows:Int) {
       if(column==0) ret += "|"
 
       if(cells(column)(row)!=null && !cells(column)(row).empty) {
-        ret +=cells(column)(row).toString()
+        ret +=cells(column)(row).toString()        
       }else{
         ret +=" "
       }

@@ -18,3 +18,7 @@ class Cell(c: Int, r: Int, v: Int) {
   
   override def toString = value.toString.replace('0', ' ')
 }
+
+//val 
+//traids
+// abstractionen
