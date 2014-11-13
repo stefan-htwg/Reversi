@@ -15,7 +15,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
   var compwhite = true;
   var compblack = false;
 
-  doreset(sqwhite);
+  doReset(sqwhite);
  
   def setAt(column: Int, row: Int, value: Int) {
     getCell(column,row).set(value)
@@ -33,7 +33,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     board.setCell(cell); 
   }
   
-  def doreset(firstmove: Int) {
+  def doReset(firstmove: Int) {
     for (column <- 0 until max_cols; row <- 0 until max_rows) {
       setCell(new Cell(column, row,sqblank))
     }
@@ -48,17 +48,17 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     else
       whoseturn = sqwhite;
 
-    nextmove()
+    nextMove()
   }
 
   
-  def getscore() {
-    val wtscore = calculatescore(sqwhite);
-    val bkscore = calculatescore(sqblack);
-    showscore(wtscore, bkscore);
+  def getScore() {
+    val wtscore = calculateScore(sqwhite);
+    val bkscore = calculateScore(sqblack);
+    showScore(wtscore, bkscore);
   }
 
-  def calculatescore(icol: Int): Int = {
+  def calculateScore(icol: Int): Int = {
     var sum = 0;
     for (column <- 1 to max_cols; row <- 1 to max_rows) {
       if (getAt(column,row) == icol) {
@@ -69,16 +69,16 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
   }
 
   //TODO move to gui
-  def showscore(wtscore: Int, bkscore: Int) {
+  def showScore(wtscore: Int, bkscore: Int) {
     println("score white:" + wtscore + " black:" + bkscore)
   }
 
-  def cancapture(x: Int, y: Int, n: Int): Boolean =
+  def canCapture(x: Int, y: Int, n: Int): Boolean =
     {
 
       for (a <- -1 to 1; b <- -1 to 1) {
         if (!(a == 0 && b == 0)) {
-          if (cancapturedir(x, y, a, b, n))
+          if (canCaptureDir(x, y, a, b, n))
             return true;
         }
       }
@@ -86,7 +86,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
 
     }
 
-  def cancapturedir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Boolean =
+  def canCaptureDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Boolean =
     {
       var thiscolor = n;
       var thatcolor = 0;
@@ -111,7 +111,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
       //one square of opposite colour before a square of the same colour.
       if (getAt(x + xoff,y + yoff) == thatcolor &&
         (
-          getAt(x + xoff + xoff,y + yoff + yoff) == thiscolor || cancapturedir(x + xoff, y + yoff, xoff, yoff, thiscolor))) {
+          getAt(x + xoff + xoff,y + yoff + yoff) == thiscolor || canCaptureDir(x + xoff, y + yoff, xoff, yoff, thiscolor))) {
         return true;
       }
       return false;
@@ -121,7 +121,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     if (debugMode) println(str)
   }
 
-  def isvalidmove(columns: Int, rows: Int, n: Int): Boolean = {
+  def isValidMove(columns: Int, rows: Int, n: Int): Boolean = {
 
     if (columns < 1 || columns > max_cols  || rows < 1 || rows > max_rows ) {
       log("out of bounce");
@@ -132,22 +132,22 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
       return false;
     }
 
-    if (cancapture(columns, rows, n) != true) {
+    if (canCapture(columns, rows, n) != true) {
       log("nothing is captured");
       return false;
     }
 
-    log("isvalidmove: x/y=player" + columns + "/" + rows + "=" + n)
+    log("isValidMove: x/y=player" + columns + "/" + rows + "=" + n)
 
     return true;
   }
 
   
 
-  def validmovesexist(n: Int): Boolean =
+  def validMovesExist(n: Int): Boolean =
     {
       for (i <- 1 to max_cols ; j <- 1 to max_rows ) {
-        if (isvalidmove(i, j, n)) {
+        if (isValidMove(i, j, n)) {
           return true;
         }
       }
@@ -155,8 +155,8 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     }
 
   def gameover() {
-    var wtscore = calculatescore(sqwhite);
-    var bkscore = calculatescore(sqblack);
+    var wtscore = calculateScore(sqwhite);
+    var bkscore = calculateScore(sqblack);
     var winner = ""
 
     if (wtscore > bkscore) {
@@ -168,40 +168,40 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     }
 
      //TODO move to gui
-    println("Game over!\n\nScore is:\nwhite " + calculatescore(sqwhite) + "\nblack " + calculatescore(sqblack) + "\n" + winner);
+    println("Game over!\n\nScore is:\nwhite " + calculateScore(sqwhite) + "\nblack " + calculateScore(sqblack) + "\n" + winner);
   }
 
-  def nextmove() {
-    getscore();
+  def nextMove() {
+    getScore();
 
-    if (whoseturn == sqwhite && validmovesexist(sqblack)) {
+    if (whoseturn == sqwhite && validMovesExist(sqblack)) {
       whoseturn = sqblack;
       log("validmovesexist sqblack=1!")
     } else {
-      if (whoseturn == sqblack && validmovesexist(sqwhite)) {
+      if (whoseturn == sqblack && validMovesExist(sqwhite)) {
         whoseturn = sqwhite;
         log("validmovesexist sqwhite=2!")
       }
     }
 
-    if (!(validmovesexist(sqwhite) || validmovesexist(sqblack))) {
+    if (!(validMovesExist(sqwhite) || validMovesExist(sqblack))) {
       gameover();
     } else {
 
-      if (iscomputersmove(whoseturn) == true) {
+      if (isComputersMove(getPlayer) == true) {
          //TODO move to gui
     	 println("computer move: ")
 
-        docomputersmove(whoseturn);
+        doComputersMove(getPlayer);
       } else {
          //TODO move to gui
-    	 println("nextmove: " + whoseturn)
+    	 println("nextMove: " + getPlayer)
       }
     }
 
   }
 
-  def scoreinbetweensdir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Int = {
+  def scoreInBetweensDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Int = {
     var thiscolor = n;
     var thatcolor = 0;
     var result = 0;
@@ -210,20 +210,20 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
 
     if (getAt(x + xoff,y + yoff) == thatcolor) {
       result += 1;
-      result += scoreinbetweensdir(x + xoff, y + yoff, xoff, yoff, thiscolor);
+      result += scoreInBetweensDir(x + xoff, y + yoff, xoff, yoff, thiscolor);
     }
     return result;
   }
 
-  def getvalue(columns: Int, rows: Int, icol: Int): Int = {
+  def getValue(columns: Int, rows: Int, icol: Int): Int = {
     var score = 0;
-    if (isvalidmove(columns, rows, icol)) {
+    if (isValidMove(columns, rows, icol)) {
       score = 1;
 
       for (x <- -1 to 1; y <- -1 to 1) {
         if (!(x == 0 && y == 0)) {
-          if (cancapturedir(columns, rows, x, y, icol)) {
-            score = score + scoreinbetweensdir(columns, rows, x, y, icol);
+          if (canCaptureDir(columns, rows, x, y, icol)) {
+            score = score + scoreInBetweensDir(columns, rows, x, y, icol);
           }
         }
       }
@@ -231,17 +231,17 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     return score
   }
 
-  def doinbetweens(x: Int, y: Int, n: Int) {
+  def doInBetweens(x: Int, y: Int, n: Int) {
     for (i <- -1 to 1; j <- -1 to 1) {
       if (!(i == 0 && j == 0)) {
-        if (cancapturedir(x, y, i, j, n)) {
-          doinbetweensdir(x, y, i, j, n);
+        if (canCaptureDir(x, y, i, j, n)) {
+          doInBetweensDir(x, y, i, j, n);
         }
       }
     }
   }
 
-  def doinbetweensdir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int) {
+  def doInBetweensDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int) {
     var thiscolor = n;
     var thatcolor = 0;
 
@@ -249,26 +249,26 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     if (thiscolor == 2) { thatcolor = 1; }
     if (getAt(x + xoff,y + yoff) == thatcolor) {
       setAt(x + xoff, y + yoff, thiscolor);
-      doinbetweensdir(x + xoff, y + yoff, xoff, yoff, thiscolor);
+      doInBetweensDir(x + xoff, y + yoff, xoff, yoff, thiscolor);
     }
 
   }
 
-  def domove(x: Int, y: Int, n: Int) {
+  def doMove(x: Int, y: Int, n: Int) {
 
-    if (isvalidmove(x, y, n)) {
-      setAt(x, y, whoseturn);
+    if (isValidMove(x, y, n)) {
+      setAt(x, y, getPlayer);
 
-      doinbetweens(x, y, n);
+      doInBetweens(x, y, n);
 
-      nextmove();
+      nextMove();
     } else {
        //TODO move to gui
     	println("not a valid move");
     }
   }
 
-  def iscomputersmove(test: Int): Boolean = {
+  def isComputersMove(test: Int): Boolean = {
     //if whoseturn is computer's move return true
 
     if (compwhite == true && test == sqwhite) { return true; }
@@ -277,7 +277,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     return false;
   }
 
-  def docomputersmove(icol: Int) {
+  def doComputersMove(icol: Int) {
     var highscore = 0.0
     var lowscore = 0.0
     var lowx = 0
@@ -287,7 +287,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     var highy = 0
 
     for (columns <- 1 to max_cols ; rows <- 1 to max_rows ) {
-      var currscore = getvalue(columns, rows, icol);
+      var currscore = getValue(columns, rows, icol);
 
       if (currscore > highscore) {
         highx = columns;
@@ -305,12 +305,12 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
 
      //TODO move to gui
     println("cp move:" + highx + "/" + highy);
-    domove(highx, highy, icol)
+    doMove(highx, highy, icol)
   }
 
   //register click on the board.
   def clickat(x: Int, y: Int) {
-    domove(x, y, whoseturn);
+    doMove(x, y, getPlayer());
   }
 
   def getPlayer() = whoseturn

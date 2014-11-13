@@ -26,7 +26,7 @@ class ReversiTui(controller: Controller) extends Reactor {
           }
           case "r" => {
             println("Game reset!")
-            controller.getModel.doreset(startWithPlayer);
+            controller.getModel.doReset(startWithPlayer);
             print(controller.getModel.board.toString())
           }
           case "s1" => {
