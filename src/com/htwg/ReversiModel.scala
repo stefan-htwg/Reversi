@@ -68,6 +68,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     sum
   }
 
+  //TODO move to gui
   def showscore(wtscore: Int, bkscore: Int) {
     println("score white:" + wtscore + " black:" + bkscore)
   }
@@ -89,8 +90,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     {
       var thiscolor = n;
       var thatcolor = 0;
-      val result = false;
-
+     
       if (thiscolor == 1) {
         thatcolor = 2
       }
@@ -167,6 +167,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
       winner = "Draw";
     }
 
+     //TODO move to gui
     println("Game over!\n\nScore is:\nwhite " + calculatescore(sqwhite) + "\nblack " + calculatescore(sqblack) + "\n" + winner);
   }
 
@@ -188,11 +189,13 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
     } else {
 
       if (iscomputersmove(whoseturn) == true) {
-        println("computer move: ")
+         //TODO move to gui
+    	 println("computer move: ")
 
         docomputersmove(whoseturn);
       } else {
-        println("nextmove: " + whoseturn)
+         //TODO move to gui
+    	 println("nextmove: " + whoseturn)
       }
     }
 
@@ -260,7 +263,8 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
 
       nextmove();
     } else {
-      println("not a valid move");
+       //TODO move to gui
+    	println("not a valid move");
     }
   }
 
@@ -299,6 +303,7 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
 
     }
 
+     //TODO move to gui
     println("cp move:" + highx + "/" + highy);
     domove(highx, highy, icol)
   }

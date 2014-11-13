@@ -9,6 +9,9 @@ import scala.swing.Label
 import scala.swing.MainFrame
 import scala.swing.SimpleSwingApplication
 
+//TODO show current score
+//TODO show game state running / finnished
+
 class ReversiGui(controller: Controller) extends SimpleSwingApplication {
 
   val width = 8
