@@ -16,7 +16,7 @@ class Controller(var model: ReversiModel) extends Publisher{
     {
 	  // TODO check bounds
     
-	  model.clickat(col, row) 
+	  model.clickAt(col, row) 
 	  publish(new BoardChanged)
     }
   

@@ -9,8 +9,10 @@ import com.htwg.ReversiModel
 class ReversiModelTests {
 
   val model = new ReversiModel()
+  val noPlayer=0
   var startPlayer = 1;
 
+  
   @Before def initialize() {
   }
 
@@ -25,11 +27,17 @@ class ReversiModelTests {
 
     Assert.assertSame(model.getAt(4, 5), nextPlayer)
 
-    model.clickat(3, 5);
+    model.clickAt(3, 5)
 
     Assert.assertSame(model.getAt(3, 5), player)
 
     Assert.assertSame(model.getAt(4, 5), player)
   }
+  
+   @Test def testWrongMove = {
 
+         model.clickAt(1, 1)
+
+         Assert.assertSame(model.getAt(1, 1), noPlayer)
+   }
 }

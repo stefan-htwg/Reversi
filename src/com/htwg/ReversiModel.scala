@@ -326,7 +326,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
   }
 
   //register click on the board.
-  def clickat(x: Int, y: Int) {
+  def clickAt(x: Int, y: Int) {
     doMove(x, y, getPlayer());
   }
 

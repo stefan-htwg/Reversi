@@ -60,7 +60,7 @@ class ReversiTui(controller: Controller) extends Reactor {
             input.toList.filter(c => c != ' ').map(c => c.toString.toInt) match {
               case column :: row :: Nil => {
                 println("column/row: " + column + "/" + row)
-                controller.getModel.clickat(column, row)
+                controller.getModel.clickAt(column, row)
                 print(controller.getModel.board.toString())
               }
               case _ => println("False Input!!!")
