@@ -12,8 +12,8 @@ class ReversiTui(controller: Controller) extends Reactor {
   def startup(args: Array[String]): Unit =
     {
       var input = ""
-      var startWithPlayer = 1 //1 OR 2
-      var size =10;
+      var startWithPlayer = controller.getModel.sqblack 
+      var size =8;
       
       
       controller.getModel.init(size,size)
@@ -35,13 +35,13 @@ class ReversiTui(controller: Controller) extends Reactor {
             controller.getModel.doReset(startWithPlayer);
             print(controller.getModel.board.toString())
           }
-          case "s1" => {
-            println("s1")
-            startWithPlayer = 1
+          case "black" => {
+            println("black starts")
+            startWithPlayer = controller.getModel.sqblack 
           }
-          case "s2" => {
-            println("s2")
-            startWithPlayer = 2
+          case "white" => {
+            println("white starts")
+            startWithPlayer = controller.getModel.sqwhite  
           }
           case "size1" => {
             println("change size 4x4")

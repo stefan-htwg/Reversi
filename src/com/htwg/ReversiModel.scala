@@ -2,59 +2,60 @@ package com.htwg
 
 class ReversiModel(cols: Integer, rows: Integer) {
 
-  var max_cols =cols
-  var max_rows =rows
-  
+  var max_cols = cols
+  var max_rows = rows
+
   val board = new Board(max_cols, max_rows)
 
   def this() {
     this(8, 8)
   }
 
-  
   def init(cols: Integer, rows: Integer) {
-    max_cols =cols
-    max_rows =rows
+    max_cols = cols
+    max_rows = rows
     board.init(max_cols, max_rows)
   }
 
   var whoseturn = 0
+  var numMoves = 0
   val sqblack = 1
   val sqwhite = 2
   val sqblank = 0
   val debugMode = false
-  
+
   //TODO active comp player by gui
-  val compwhite = true;
+  val compwhite = false;
   val compblack = false;
 
   doReset(sqwhite);
- 
+
   def setAt(column: Int, row: Int, value: Int) {
-    getCell(column,row).set(value)
+    getCell(column, row).set(value)
   }
-  
-  def getAt(column: Int, row: Int) : Int ={
-    getCell(column,row).value 
+
+  def getAt(column: Int, row: Int): Int = {
+    getCell(column, row).value
   }
-  
-  def getCell(column: Int, row: Int) : Cell ={
-    board.cells(column-1)(row-1) 
+
+  def getCell(column: Int, row: Int): Cell = {
+    board.cells(column - 1)(row - 1)
   }
-  
-  def setCell(cell :Cell) {
-    board.setCell(cell); 
+
+  def setCell(cell: Cell) {
+    board.setCell(cell);
   }
-  
+
   def doReset(firstmove: Int) {
+    numMoves=0
     for (column <- 0 until max_cols; row <- 0 until max_rows) {
-      setCell(new Cell(column, row,sqblank))
+      setCell(new Cell(column, row, sqblank))
     }
 
-    setAt(max_cols/2,max_rows/2,sqblack)
-    setAt((max_cols/2)+1,(max_rows/2)+1,sqblack)
-    setAt(max_cols/2,(max_rows/2)+1,sqwhite)
-    setAt((max_cols/2)+1,max_rows/2,sqwhite)
+    setAt(max_cols / 2, max_rows / 2, sqblack)
+    setAt((max_cols / 2) + 1, (max_rows / 2) + 1, sqblack)
+    setAt(max_cols / 2, (max_rows / 2) + 1, sqwhite)
+    setAt((max_cols / 2) + 1, max_rows / 2, sqwhite)
 
     if (firstmove == sqblack)
       whoseturn = sqblack;
@@ -64,11 +65,10 @@ class ReversiModel(cols: Integer, rows: Integer) {
     nextMove()
   }
 
-  
-  def getPlayerScore(player:Int) = {
+  def getPlayerScore(player: Int) = {
     calculateScore(player)
   }
-  
+
   def getTotalScore() {
     val wtscore = getPlayerScore(sqwhite);
     val bkscore = getPlayerScore(sqblack);
@@ -78,7 +78,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
   def calculateScore(icol: Int): Int = {
     var sum = 0;
     for (column <- 1 to max_cols; row <- 1 to max_rows) {
-      if (getAt(column,row) == icol) {
+      if (getAt(column, row) == icol) {
         sum += 1;
       }
     }
@@ -107,7 +107,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
     {
       var thiscolor = n;
       var thatcolor = 0;
-     
+
       if (thiscolor == 1) {
         thatcolor = 2
       }
@@ -116,19 +116,19 @@ class ReversiModel(cols: Integer, rows: Integer) {
       if (x + xoff + xoff < 1 ||
         x + xoff + xoff > max_cols ||
         y + yoff + yoff < 1 ||
-        y + yoff + yoff > max_rows ) {
+        y + yoff + yoff > max_rows) {
         return false;
 
       }
 
-      if (getAt(x + xoff,y + yoff) == sqblank) {
+      if (getAt(x + xoff, y + yoff) == sqblank) {
         return false;
       }
 
       //one square of opposite colour before a square of the same colour.
-      if (getAt(x + xoff,y + yoff) == thatcolor &&
+      if (getAt(x + xoff, y + yoff) == thatcolor &&
         (
-          getAt(x + xoff + xoff,y + yoff + yoff) == thiscolor || canCaptureDir(x + xoff, y + yoff, xoff, yoff, thiscolor))) {
+          getAt(x + xoff + xoff, y + yoff + yoff) == thiscolor || canCaptureDir(x + xoff, y + yoff, xoff, yoff, thiscolor))) {
         return true;
       }
       return false;
@@ -140,11 +140,11 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
   def isValidMove(columns: Int, rows: Int, n: Int): Boolean = {
 
-    if (columns < 1 || columns > max_cols  || rows < 1 || rows > max_rows ) {
+    if (columns < 1 || columns > max_cols || rows < 1 || rows > max_rows) {
       log("out of bounce");
       return false;
     }
-    if (getAt(columns,rows) != sqblank) {
+    if (getAt(columns, rows) != sqblank) {
       log("not empty");
       return false;
     }
@@ -159,11 +159,9 @@ class ReversiModel(cols: Integer, rows: Integer) {
     return true;
   }
 
-  
-
   def validMovesExist(n: Int): Boolean =
     {
-      for (i <- 1 to max_cols ; j <- 1 to max_rows ) {
+      for (i <- 1 to max_cols; j <- 1 to max_rows) {
         if (isValidMove(i, j, n)) {
           return true;
         }
@@ -184,20 +182,22 @@ class ReversiModel(cols: Integer, rows: Integer) {
       winner = "Draw";
     }
 
-     //TODO move to gui
+    //TODO move to gui
     println("Game over!\n\nScore is:\nwhite " + calculateScore(sqwhite) + "\nblack " + calculateScore(sqblack) + "\n" + winner);
   }
 
   def nextMove() {
     getTotalScore();
 
-    if (whoseturn == sqwhite && validMovesExist(sqblack)) {
-      whoseturn = sqblack;
-      log("validmovesexist sqblack=1!")
-    } else {
-      if (whoseturn == sqblack && validMovesExist(sqwhite)) {
-        whoseturn = sqwhite;
-        log("validmovesexist sqwhite=2!")
+    if (numMoves > 0) {
+      if (whoseturn == sqwhite && validMovesExist(sqblack)) {
+        whoseturn = sqblack;
+        log("validmovesexist sqblack=1!")
+      } else {
+        if (whoseturn == sqblack && validMovesExist(sqwhite)) {
+          whoseturn = sqwhite;
+          log("validmovesexist sqwhite=2!")
+        }
       }
     }
 
@@ -206,16 +206,17 @@ class ReversiModel(cols: Integer, rows: Integer) {
     } else {
 
       if (isComputersMove(getPlayer) == true) {
-         //TODO move to gui
-    	 println("computer move: ")
+        //TODO move to gui
+        println("computer move: ")
 
         doComputersMove(getPlayer);
       } else {
-         //TODO move to gui
-    	 println("nextMove: " + getPlayer)
+        //TODO move to gui
+        println("nextMove: " + getPlayer)
       }
     }
 
+    numMoves += 1;
   }
 
   def scoreInBetweensDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Int = {
@@ -225,7 +226,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
     if (thiscolor == 1) { thatcolor = 2; }
     if (thiscolor == 2) { thatcolor = 1; }
 
-    if (getAt(x + xoff,y + yoff) == thatcolor) {
+    if (getAt(x + xoff, y + yoff) == thatcolor) {
       result += 1;
       result += scoreInBetweensDir(x + xoff, y + yoff, xoff, yoff, thiscolor);
     }
@@ -264,7 +265,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
     if (thiscolor == 1) { thatcolor = 2; }
     if (thiscolor == 2) { thatcolor = 1; }
-    if (getAt(x + xoff,y + yoff) == thatcolor) {
+    if (getAt(x + xoff, y + yoff) == thatcolor) {
       setAt(x + xoff, y + yoff, thiscolor);
       doInBetweensDir(x + xoff, y + yoff, xoff, yoff, thiscolor);
     }
@@ -280,8 +281,8 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
       nextMove();
     } else {
-       //TODO move to gui
-    	println("not a valid move");
+      //TODO move to gui
+      println("not a valid move");
     }
   }
 
@@ -303,7 +304,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
     var highx = 0
     var highy = 0
 
-    for (columns <- 1 to max_cols ; rows <- 1 to max_rows ) {
+    for (columns <- 1 to max_cols; rows <- 1 to max_rows) {
       var currscore = getValue(columns, rows, icol);
 
       if (currscore > highscore) {
@@ -320,7 +321,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
     }
 
-     //TODO move to gui
+    //TODO move to gui
     println("cp move:" + highx + "/" + highy);
     doMove(highx, highy, icol)
   }
