@@ -26,4 +26,9 @@ class Controller(var model: ReversiModel) extends Publisher{
   def getCurrentPlayer = model.getPlayer() 
   
   def getModel =  model
+  
+  def getBlackPlayerScore =  model.getPlayerScore(model.sqblack)
+  
+  def getWhitePlayerScore =  model.getPlayerScore(model.sqwhite)
+  
 }

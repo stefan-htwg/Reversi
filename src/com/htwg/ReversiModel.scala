@@ -23,6 +23,8 @@ class ReversiModel(cols: Integer, rows: Integer) {
   val sqwhite = 2
   val sqblank = 0
   val debugMode = false
+  
+  //TODO active comp player by gui
   val compwhite = true;
   val compblack = false;
 
@@ -63,9 +65,13 @@ class ReversiModel(cols: Integer, rows: Integer) {
   }
 
   
-  def getScore() {
-    val wtscore = calculateScore(sqwhite);
-    val bkscore = calculateScore(sqblack);
+  def getPlayerScore(player:Int) = {
+    calculateScore(player)
+  }
+  
+  def getTotalScore() {
+    val wtscore = getPlayerScore(sqwhite);
+    val bkscore = getPlayerScore(sqblack);
     showScore(wtscore, bkscore);
   }
 
@@ -183,7 +189,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
   }
 
   def nextMove() {
-    getScore();
+    getTotalScore();
 
     if (whoseturn == sqwhite && validMovesExist(sqblack)) {
       whoseturn = sqblack;

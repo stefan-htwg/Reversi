@@ -9,7 +9,6 @@ import scala.swing.Label
 import scala.swing.MainFrame
 import scala.swing.SimpleSwingApplication
 
-//TODO show current score
 //TODO show game state running / finished
 
 class ReversiGui(controller: Controller) extends SimpleSwingApplication {
@@ -21,6 +20,8 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
 
   var buttons: List[Tuple2[Position, Button]] = List()
   var currentPlayerLabel = new Label(controller.getCurrentPlayer.toString)
+  var blackPlayerLabel = new Label(controller.getBlackPlayerScore.toString)
+  var whitePlayerLabel = new Label(controller.getWhitePlayerScore.toString)
 
   reactions += {
     case e: BoardChanged => updateUI
@@ -32,8 +33,13 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
       new BorderPanel {
     	add(new FlowPanel
     	    {
+    			contents += new Label("Black score: ")
+    			contents += blackPlayerLabel
     			contents += new Label("Current player is: ")
-    			contents += currentPlayerLabel 
+    			contents += currentPlayerLabel
+    			contents += new Label("White score: ")
+    			contents += whitePlayerLabel
+    			
     	    }, BorderPanel.Position.North)
         add(
           new GridBagPanel {
@@ -62,6 +68,8 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
         item._2.repaint
       })
     currentPlayerLabel.text = controller.getCurrentPlayer.toString
+    blackPlayerLabel.text = controller.getBlackPlayerScore.toString
+    whitePlayerLabel.text = controller.getWhitePlayerScore.toString
     currentPlayerLabel.repaint
   }
 
