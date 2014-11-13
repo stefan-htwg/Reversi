@@ -8,6 +8,10 @@ case class BoardChanged() extends Event
 
 class Controller(var model: ReversiModel) extends Publisher{
   
+  def resetGame(col:Int,row:Int){
+    model.init(col,row)
+  }
+  
   def setCell(col: Integer, row: Integer) = 
     {
 	  // TODO check bounds
@@ -16,8 +20,9 @@ class Controller(var model: ReversiModel) extends Publisher{
 	  publish(new BoardChanged)
     }
   
-  def getValueAt(column : Integer, row : Integer) = model.getAt(column,row)
-  
+  def getValueAt(column : Integer, row : Integer) = model.getCell(column,row).toString
+
+    
   def getCurrentPlayer = model.getPlayer() 
   
   def getModel =  model

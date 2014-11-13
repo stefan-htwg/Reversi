@@ -1,19 +1,30 @@
 package com.htwg
 
-class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
+class ReversiModel(cols: Integer, rows: Integer) {
+
+  var max_cols =cols
+  var max_rows =rows
+  
+  val board = new Board(max_cols, max_rows)
+
   def this() {
     this(8, 8)
   }
 
-  var board = new Board(max_cols, max_rows)
+  
+  def init(cols: Integer, rows: Integer) {
+    max_cols =cols
+    max_rows =rows
+    board.init(max_cols, max_rows)
+  }
 
   var whoseturn = 0
-  var sqblack = 1
-  var sqwhite = 2
-  var sqblank = 0
-  var debugMode = false
-  var compwhite = true;
-  var compblack = false;
+  val sqblack = 1
+  val sqwhite = 2
+  val sqblank = 0
+  val debugMode = false
+  val compwhite = true;
+  val compblack = false;
 
   doReset(sqwhite);
  
@@ -38,10 +49,10 @@ class ReversiModel(val max_cols: Integer, val max_rows: Integer) {
       setCell(new Cell(column, row,sqblank))
     }
 
-    setAt(4,4,sqblack)
-    setAt(5,5,sqblack)
-    setAt(4,5,sqwhite)
-    setAt(5,4,sqwhite)
+    setAt(max_cols/2,max_rows/2,sqblack)
+    setAt((max_cols/2)+1,(max_rows/2)+1,sqblack)
+    setAt(max_cols/2,(max_rows/2)+1,sqwhite)
+    setAt((max_cols/2)+1,max_rows/2,sqwhite)
 
     if (firstmove == sqblack)
       whoseturn = sqblack;

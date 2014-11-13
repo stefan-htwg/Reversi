@@ -13,7 +13,12 @@ class ReversiTui(controller: Controller) extends Reactor {
     {
       var input = ""
       var startWithPlayer = 1 //1 OR 2
-
+      var size =10;
+      
+      
+      controller.getModel.init(size,size)
+      controller.getModel.doReset(startWithPlayer);
+      
       println(controller.getModel.board.toString())
       
       while (true) {
@@ -26,6 +31,7 @@ class ReversiTui(controller: Controller) extends Reactor {
           }
           case "r" => {
             println("Game reset!")
+            controller.getModel.init(size,size)
             controller.getModel.doReset(startWithPlayer);
             print(controller.getModel.board.toString())
           }
@@ -36,6 +42,18 @@ class ReversiTui(controller: Controller) extends Reactor {
           case "s2" => {
             println("s2")
             startWithPlayer = 2
+          }
+          case "size1" => {
+            println("change size 4x4")
+            size=4
+          }
+          case "size2" => {
+            println("change size 6x6")
+            size=6
+          }
+          case "size3" => {
+            println("change size 8x8")
+            size=6
           }
           case _ => {
             println("input!")

@@ -10,7 +10,7 @@ import scala.swing.MainFrame
 import scala.swing.SimpleSwingApplication
 
 //TODO show current score
-//TODO show game state running / finnished
+//TODO show game state running / finished
 
 class ReversiGui(controller: Controller) extends SimpleSwingApplication {
 
@@ -39,13 +39,13 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
           new GridBagPanel {
             val gbc = new Constraints()
 
-            for (y <- 0 until width) {
-              for (x <- 0 until height) {
+            for (y <- 1 to width) {
+              for (x <- 1 to height) {
                 gbc.gridx = x
                 gbc.gridy = y
-                var button = new Button(Action(controller.getValueAt(x, y)toString) {
+                var button = new Button(Action(controller.getValueAt(x, y).toString) {
                   println("Try setting cell at: X: " + x + " Y: " + y)
-                  controller.setCell(x+1, y+1)
+                  controller.setCell(x, y)
                 })
                 buttons = Tuple2[Position, Button](new Position(x, y), button) :: buttons
                 add(button, gbc)
