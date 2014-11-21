@@ -5,13 +5,8 @@ class Board(cols: Int, rows: Int) {
   var max_rows =rows
   private var _cells = Array.ofDim[Cell](max_cols, max_rows) 
 
+  reset
   
-  def init(cols: Int, rows: Int): Unit = {
-    max_cols =cols
-    max_rows =rows
-    _cells = Array.ofDim[Cell](max_cols, max_rows)  
-  }
-
   // Getter 
   def cells = _cells
 
@@ -27,6 +22,12 @@ class Board(cols: Int, rows: Int) {
       if (_cells(col)(index) == null) return index
     }
     return -1
+  }
+  
+  def reset(){
+      for (column <- 0 until max_cols; row <- 0 until max_rows) {
+      setCell(new Cell(column, row, 0))
+    }
   }
 
   override def toString(): String = {

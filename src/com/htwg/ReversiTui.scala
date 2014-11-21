@@ -12,17 +12,16 @@ class ReversiTui(controller: Controller) extends Reactor {
   def startup(args: Array[String]): Unit =
     {
       var input = ""
-      var startWithPlayer = controller.getModel.sqblack 
-      var size =8;
-      
-      
-      controller.getModel.init(size,size)
-      controller.getModel.doReset(startWithPlayer);
-      
-      println(controller.getModel.board.toString())
-      
+      var startWithPlayer = controller.getCurrentPlayer
+      var size = 8;
+
+      controller.reset(size, size, startWithPlayer);
+
+      println("Current player is: Player " + controller.getCurrentPlayer)
+      println(controller.toString)
+
       while (true) {
-        input = readLine();
+        input = readLine
 
         input match {
           case "q" => {
@@ -31,37 +30,37 @@ class ReversiTui(controller: Controller) extends Reactor {
           }
           case "r" => {
             println("Game reset!")
-            controller.getModel.init(size,size)
-            controller.getModel.doReset(startWithPlayer);
-            print(controller.getModel.board.toString())
+            controller.reset(size, size, startWithPlayer)
+            print(controller.toString())
           }
           case "black" => {
             println("black starts")
-            startWithPlayer = controller.getModel.sqblack 
+            startWithPlayer = Player.Player1
           }
           case "white" => {
             println("white starts")
-            startWithPlayer = controller.getModel.sqwhite  
+            startWithPlayer = Player.Player2
           }
           case "size1" => {
             println("change size 4x4")
-            size=4
+            size = 4
           }
           case "size2" => {
             println("change size 6x6")
-            size=6
+            size = 6
           }
           case "size3" => {
             println("change size 8x8")
-            size=6
+            size = 6
           }
           case _ => {
             println("input!")
             input.toList.filter(c => c != ' ').map(c => c.toString.toInt) match {
               case column :: row :: Nil => {
                 println("column/row: " + column + "/" + row)
-                controller.getModel.clickAt(column, row)
-                print(controller.getModel.board.toString())
+                controller.setCell(column, row)
+                println("Current player is: Player " + controller.getCurrentPlayer)
+                print(controller.toString)
               }
               case _ => println("False Input!!!")
 

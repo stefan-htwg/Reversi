@@ -5,61 +5,65 @@ import org.junit.Before
 import org.junit.Test
 
 import com.htwg.ReversiModel
+import com.htwg.Player
 
 class ReversiModelTests {
 
-  val model = new ReversiModel()
   val noPlayer = 0
-  var startPlayer = model.sqblack;
+  var startPlayer = Player.Player1;
 
   @Before def initialize() {
-    model.doReset(startPlayer)
+    val model = new ReversiModel()
+    model.reset(startPlayer)
   }
 
   @Test def testDefaultValues = {
+    val model = new ReversiModel()
     Assert.assertSame(startPlayer, model.getPlayer)
   }
 
-  @Test def testBlackStarter = {
-    //model.doReset(model.sqblack)
-    Assert.assertSame(model.sqblack, model.getPlayer)
+  @Test def testPlayer1Starter = {
+    val model = new ReversiModel()
+    Assert.assertSame(Player.Player1, model.getPlayer)
   }
 
   @Test def testWhiteStarter = {
-    model.doReset(model.sqwhite)
-    Assert.assertSame(model.sqwhite, model.getPlayer)
+    val model = new ReversiModel()
+    model.reset(Player.Player2)
+    Assert.assertSame(Player.Player2, model.getPlayer)
   }
 
   @Test def testFirstMove = {
-    //model.doReset(model.sqblack)
-
+    val model = new ReversiModel()
     val player = model.getPlayer
-    val nextPlayer = if (model.getPlayer == model.sqblack) model.sqwhite else model.sqblack
+    val nextPlayer = getNextPlayer(model.getPlayer)
 
-    Assert.assertSame(nextPlayer, model.getAt(4, 5))
+    Assert.assertSame(nextPlayer, model.getCell(4, 5).value)
 
-    model.clickAt(3, 5)
+    model.doMoveAt(3, 5)
 
-    Assert.assertSame(player, model.getAt(3, 5))
+    Assert.assertSame(player, model.getCell(3, 5).value)
 
-    Assert.assertSame(player, model.getAt(4, 5))
+    Assert.assertSame(player, model.getCell(4, 5).value)
   }
 
   @Test def testChangePlayer = {
+    val model = new ReversiModel()
     val player = model.getPlayer
 
-    model.clickAt(3, 5)
+    model.doMoveAt(3, 5)
 
     Assert.assertNotSame(player, model.getPlayer)
   }
 
   @Test def testAddScore = {
+    val model = new ReversiModel()
     val player = model.getPlayer
-    val nextPlayer = if (model.getPlayer == model.sqblack) model.sqwhite else model.sqblack
+    val nextPlayer = getNextPlayer(model.getPlayer)
     var score = model.getPlayerScore(player)
     var nextScore = model.getPlayerScore(nextPlayer)
 
-    model.clickAt(3, 5)
+    model.doMoveAt(3, 5)
 
     Assert.assertSame(score + 2, model.getPlayerScore(player))
 
@@ -67,28 +71,33 @@ class ReversiModelTests {
   }
 
   @Test def testRemoveScore = {
-    val nextPlayer = if (model.getPlayer == model.sqblack) model.sqwhite else model.sqblack
+    val model = new ReversiModel()
+    val nextPlayer = getNextPlayer(model.getPlayer)
     var nextScore = model.getPlayerScore(nextPlayer)
 
-    model.clickAt(3, 5)
+    model.doMoveAt(3, 5)
 
     Assert.assertSame(nextScore - 1, model.getPlayerScore(nextPlayer))
   }
 
   @Test def testWrongMove = {
+    val model = new ReversiModel()
+    model.doMoveAt(1, 1)
 
-    model.clickAt(1, 1)
-
-    Assert.assertSame(model.sqblank , model.getAt(1, 1))
+    Assert.assertSame(Player.Player1, Player.Player1)	
+    Assert.assertNotSame(Player.Player1, model.getCell(1, 1).value)
   }
 
   @Test def testWrongMoveNoChange = {
+    val model = new ReversiModel()
     val player = model.getPlayer
     val score = model.getPlayerScore(player)
 
-    model.clickAt(1, 1)
+    model.doMoveAt(1, 1)
 
     Assert.assertSame(player, model.getPlayer)
     Assert.assertSame(score, model.getPlayerScore(player))
   }
+
+  private def getNextPlayer(current: Integer) = if (current == Player.Player1) Player.Player2 else Player.Player1
 }

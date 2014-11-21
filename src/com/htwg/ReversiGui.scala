@@ -20,8 +20,9 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
 
   var buttons: List[Tuple2[Position, Button]] = List()
   var currentPlayerLabel = new Label(controller.getCurrentPlayer.toString)
-  var blackPlayerLabel = new Label(controller.getBlackPlayerScore.toString)
-  var whitePlayerLabel = new Label(controller.getWhitePlayerScore.toString)
+  var player1Score = new Label(controller.getPlayer1Score.toString)
+  var player2Score = new Label(controller.getPlayer2Score.toString)
+  var gameStatus = new Label()
 
   reactions += {
     case e: BoardChanged => updateUI
@@ -31,16 +32,14 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
     title = "Reversi"
     contents =
       new BorderPanel {
-    	add(new FlowPanel
-    	    {
-    			contents += new Label("Black score: ")
-    			contents += blackPlayerLabel
-    			contents += new Label("Current player is: ")
-    			contents += currentPlayerLabel
-    			contents += new Label("White score: ")
-    			contents += whitePlayerLabel
-    			
-    	    }, BorderPanel.Position.North)
+        add(new FlowPanel {
+          contents += new Label("Current player is: ")
+          contents += currentPlayerLabel
+          contents += new Label("Player 1 score: ")
+          contents += player1Score
+          contents += new Label("Player 2 score: ")
+          contents += player2Score
+        }, BorderPanel.Position.North)
         add(
           new GridBagPanel {
             val gbc = new Constraints()
@@ -68,10 +67,10 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
         item._2.repaint
       })
     currentPlayerLabel.text = controller.getCurrentPlayer.toString
-    blackPlayerLabel.text = controller.getBlackPlayerScore.toString
-    whitePlayerLabel.text = controller.getWhitePlayerScore.toString
+    player1Score.text = controller.getPlayer1Score.toString
+    player2Score.text = controller.getPlayer2Score.toString
     currentPlayerLabel.repaint
   }
 
-  class Position(val x: Integer, val y: Integer) 
+  class Position(val x: Integer, val y: Integer)
 }

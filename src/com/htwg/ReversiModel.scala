@@ -2,80 +2,97 @@ package com.htwg
 
 class ReversiModel(cols: Integer, rows: Integer) {
 
-  var max_cols = cols
-  var max_rows = rows
+  // ---    start 		initialization
+  private var max_cols = cols
+  private var max_rows = rows
 
-  val board = new Board(max_cols, max_rows)
+  private var gameStatus = GameStatus.NotStarted
 
+  private var board = new Board(max_cols, max_rows)
+
+  private var currentPlayer = Player.Player1
+  private var numMoves = 0
+  private val sqblank = 0
+  private val debugMode = false
+
+  //TODO active computer player by GUI
+  private val computerPlaysAsPlayer2 = false;
+  private val computerPlaysAsPlayer1 = false;
+
+  reset(Player.Player1);
+
+  // ---    end 		initialization
+
+  // ---    start 		constructor
   def this() {
     this(8, 8)
   }
 
-  def init(cols: Integer, rows: Integer) {
-    max_cols = cols
-    max_rows = rows
-    board.init(max_cols, max_rows)
+  // ---    end 		constructor
+
+  // ---    start 		public methods
+
+  //register click on the board.
+  def doMoveAt(x: Int, y: Int) {
+    doMove(x, y);
   }
 
-  var whoseturn = 0
-  var numMoves = 0
-  val sqblack = 1
-  val sqwhite = 2
-  val sqblank = 0
-  val debugMode = false
-
-  //TODO active comp player by gui
-  val compwhite = false;
-  val compblack = false;
-
-  doReset(sqwhite);
-
-  def setAt(column: Int, row: Int, value: Int) {
-    getCell(column, row).set(value)
+  def reset(x: Integer, y: Integer, startWithPlayer: Integer) {
+    numMoves = 0
+    initializeBoard(x, y)
+    gameStatus = GameStatus.InProgress
+    currentPlayer = if (startWithPlayer == Player.Player1) Player.Player1 else Player.Player2
+    //nextMove()
   }
 
-  def getAt(column: Int, row: Int): Int = {
-    getCell(column, row).value
+  def reset(startWithPlayer: Int): Unit = reset(max_cols, max_rows, startWithPlayer)
+  def reset(): Unit = reset(max_cols, max_rows, Player.Player1)
+
+  def getPlayer = currentPlayer
+
+  def getPlayerScore(player: Int) = {
+    calculateScore(player)
   }
 
   def getCell(column: Int, row: Int): Cell = {
     board.cells(column - 1)(row - 1)
   }
 
-  def setCell(cell: Cell) {
+  override def toString = board.toString
+
+  // ---    end 		public methods
+
+  // ---    start 		private methods
+
+  private def setAt(column: Int, row: Int, value: Int) {
+    getCell(column, row).set(value)
+  }
+
+  private def getAt(column: Int, row: Int): Int = {
+    getCell(column, row).value
+  }
+
+  private def setCell(cell: Cell) {
     board.setCell(cell);
   }
 
-  def doReset(firstmove: Int) {
-    numMoves=0
-    for (column <- 0 until max_cols; row <- 0 until max_rows) {
-      setCell(new Cell(column, row, sqblank))
-    }
-
-    setAt(max_cols / 2, max_rows / 2, sqblack)
-    setAt((max_cols / 2) + 1, (max_rows / 2) + 1, sqblack)
-    setAt(max_cols / 2, (max_rows / 2) + 1, sqwhite)
-    setAt((max_cols / 2) + 1, max_rows / 2, sqwhite)
-
-    if (firstmove == sqblack)
-      whoseturn = sqblack;
-    else
-      whoseturn = sqwhite;
-
-    nextMove()
+  private def initializeBoard(x: Integer, y: Integer) {
+    board = new Board(x, y)
+    setAt(max_cols / 2, max_rows / 2, Player.Player1)
+    setAt((max_cols / 2) + 1, (max_rows / 2) + 1, Player.Player1)
+    setAt(max_cols / 2, (max_rows / 2) + 1, Player.Player2)
+    setAt((max_cols / 2) + 1, max_rows / 2, Player.Player2)
   }
 
-  def getPlayerScore(player: Int) = {
-    calculateScore(player)
-  }
+  //private def getTotalScore() = {
+  //  val wtscore = getPlayerScore(player2);
+  //  val bkscore = getPlayerScore(player1);
+  //  showScore(wtscore, bkscore);
+  //}
 
-  def getTotalScore() {
-    val wtscore = getPlayerScore(sqwhite);
-    val bkscore = getPlayerScore(sqblack);
-    showScore(wtscore, bkscore);
-  }
+  private def getScoreForPlayer(player: Int) = if (player == 1) getPlayerScore(Player.Player2) else getPlayerScore(Player.Player1)
 
-  def calculateScore(icol: Int): Int = {
+  private def calculateScore(icol: Int): Int = {
     var sum = 0;
     for (column <- 1 to max_cols; row <- 1 to max_rows) {
       if (getAt(column, row) == icol) {
@@ -86,11 +103,11 @@ class ReversiModel(cols: Integer, rows: Integer) {
   }
 
   //TODO move to gui
-  def showScore(wtscore: Int, bkscore: Int) {
-    println("score white:" + wtscore + " black:" + bkscore)
-  }
+  //private def showScore(wtscore: Int, bkscore: Int) {
+  //  println("score white:" + wtscore + " black:" + bkscore)
+  //}
 
-  def canCapture(x: Int, y: Int, n: Int): Boolean =
+  private def canCapture(x: Int, y: Int, n: Int): Boolean =
     {
 
       for (a <- -1 to 1; b <- -1 to 1) {
@@ -103,7 +120,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
     }
 
-  def canCaptureDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Boolean =
+  private def canCaptureDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Boolean =
     {
       var thiscolor = n;
       var thatcolor = 0;
@@ -125,7 +142,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
         return false;
       }
 
-      //one square of opposite colour before a square of the same colour.
+      //one square of opposite color before a square of the same color.
       if (getAt(x + xoff, y + yoff) == thatcolor &&
         (
           getAt(x + xoff + xoff, y + yoff + yoff) == thiscolor || canCaptureDir(x + xoff, y + yoff, xoff, yoff, thiscolor))) {
@@ -134,11 +151,11 @@ class ReversiModel(cols: Integer, rows: Integer) {
       return false;
     }
 
-  def log(str: String) {
+  private def log(str: String) {
     if (debugMode) println(str)
   }
 
-  def isValidMove(columns: Int, rows: Int, n: Int): Boolean = {
+  private def isValidMove(columns: Int, rows: Int, n: Int): Boolean = {
 
     if (columns < 1 || columns > max_cols || rows < 1 || rows > max_rows) {
       log("out of bounce");
@@ -159,7 +176,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
     return true;
   }
 
-  def validMovesExist(n: Int): Boolean =
+  private def validMovesExist(n: Int): Boolean =
     {
       for (i <- 1 to max_cols; j <- 1 to max_rows) {
         if (isValidMove(i, j, n)) {
@@ -169,9 +186,10 @@ class ReversiModel(cols: Integer, rows: Integer) {
       return false;
     }
 
-  def gameover() {
-    var wtscore = calculateScore(sqwhite);
-    var bkscore = calculateScore(sqblack);
+  /*
+  private def gameover() {
+    var wtscore = calculateScore(player2);
+    var bkscore = calculateScore(player1);
     var winner = ""
 
     if (wtscore > bkscore) {
@@ -183,43 +201,44 @@ class ReversiModel(cols: Integer, rows: Integer) {
     }
 
     //TODO move to gui
-    println("Game over!\n\nScore is:\nwhite " + calculateScore(sqwhite) + "\nblack " + calculateScore(sqblack) + "\n" + winner);
+    println("Game over!\n\nScore is:\nwhite " + calculateScore(player2) + "\nblack " + calculateScore(player1) + "\n" + winner);
   }
+  */
 
-  def nextMove() {
-    getTotalScore();
+  private def prepareNextMove() {
+    //getTotalScore();
 
-    if (numMoves > 0) {
-      if (whoseturn == sqwhite && validMovesExist(sqblack)) {
-        whoseturn = sqblack;
-        log("validmovesexist sqblack=1!")
-      } else {
-        if (whoseturn == sqblack && validMovesExist(sqwhite)) {
-          whoseturn = sqwhite;
-          log("validmovesexist sqwhite=2!")
-        }
+    if (isGameOver) {
+      gameStatus = GameStatus.GameOver //gameover();
+      return
+    }
+    
+    if (currentPlayer == Player.Player2 && validMovesExist(Player.Player1)) {
+      currentPlayer = Player.Player1;
+      log("validmovesexist player1=1!")
+    } else {
+      if (currentPlayer == Player.Player1 && validMovesExist(Player.Player2)) {
+        currentPlayer = Player.Player2
+        log("validmovesexist player2=2!")
       }
     }
 
-    if (!(validMovesExist(sqwhite) || validMovesExist(sqblack))) {
-      gameover();
+    if (isComputersMove) {
+      //TODO move to gui
+      println("computer move: ")
+
+      doComputersMove;
     } else {
-
-      if (isComputersMove(getPlayer) == true) {
-        //TODO move to gui
-        println("computer move: ")
-
-        doComputersMove(getPlayer);
-      } else {
-        //TODO move to gui
-        println("nextMove: " + getPlayer)
-      }
+      //TODO move to gui
+      println("nextMove: " + currentPlayer)
     }
 
     numMoves += 1;
   }
 
-  def scoreInBetweensDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Int = {
+  private def isGameOver = !validMovesExist(Player.Player1) && !validMovesExist(Player.Player2)
+
+  private def scoreInBetweensDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Int = {
     var thiscolor = n;
     var thatcolor = 0;
     var result = 0;
@@ -233,7 +252,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
     return result;
   }
 
-  def getValue(columns: Int, rows: Int, icol: Int): Int = {
+  private def getValue(columns: Int, rows: Int, icol: Int): Int = {
     var score = 0;
     if (isValidMove(columns, rows, icol)) {
       score = 1;
@@ -249,7 +268,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
     return score
   }
 
-  def doInBetweens(x: Int, y: Int, n: Int) {
+  private def doInBetweens(x: Int, y: Int, n: Int) {
     for (i <- -1 to 1; j <- -1 to 1) {
       if (!(i == 0 && j == 0)) {
         if (canCaptureDir(x, y, i, j, n)) {
@@ -259,7 +278,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
     }
   }
 
-  def doInBetweensDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int) {
+  private def doInBetweensDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int) {
     var thiscolor = n;
     var thatcolor = 0;
 
@@ -272,30 +291,30 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
   }
 
-  def doMove(x: Int, y: Int, n: Int) {
+  private def doMove(x: Int, y: Int) {
 
-    if (isValidMove(x, y, n)) {
-      setAt(x, y, getPlayer);
+    if (isValidMove(x, y, currentPlayer)) {
+      setAt(x, y, currentPlayer);
 
-      doInBetweens(x, y, n);
+      doInBetweens(x, y, currentPlayer);
 
-      nextMove();
+      prepareNextMove();
     } else {
       //TODO move to gui
-      println("not a valid move");
+      //println("not a valid move");
     }
   }
 
-  def isComputersMove(test: Int): Boolean = {
+  private def isComputersMove(): Boolean = {
     //if whoseturn is computer's move return true
 
-    if (compwhite == true && test == sqwhite) { return true; }
-    if (compblack == true && test == sqblack) { return true; }
+    if (computerPlaysAsPlayer2 == true && currentPlayer == Player.Player2) { return true; }
+    if (computerPlaysAsPlayer1 == true && currentPlayer == Player.Player1) { return true; }
 
     return false;
   }
 
-  def doComputersMove(icol: Int) {
+  private def doComputersMove {
     var highscore = 0.0
     var lowscore = 0.0
     var lowx = 0
@@ -305,7 +324,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
     var highy = 0
 
     for (columns <- 1 to max_cols; rows <- 1 to max_rows) {
-      var currscore = getValue(columns, rows, icol);
+      var currscore = getValue(columns, rows, currentPlayer);
 
       if (currscore > highscore) {
         highx = columns;
@@ -323,14 +342,18 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
     //TODO move to gui
     println("cp move:" + highx + "/" + highy);
-    doMove(highx, highy, icol)
+    doMove(highx, highy)
   }
 
-  //register click on the board.
-  def clickAt(x: Int, y: Int) {
-    doMove(x, y, getPlayer());
-  }
+  // ---    end 		private methods
+}
 
-  def getPlayer() = whoseturn
+object GameStatus extends Enumeration {
+  type GameStatus = Value
+  val NotStarted, InProgress, GameOver = Value
+}
 
+object Player {
+  val Player1 = 1
+  val Player2 = 2
 }
