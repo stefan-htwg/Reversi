@@ -38,13 +38,13 @@ class ReversiModelTests {
     val player = model.getPlayer
     val nextPlayer = getNextPlayer(model.getPlayer)
 
-    Assert.assertSame(nextPlayer, model.getCell(4, 5).value)
+    Assert.assertSame(nextPlayer, model.getCellValue(4, 5))
 
     model.doMoveAt(3, 5)
 
-    Assert.assertSame(player, model.getCell(3, 5).value)
+    Assert.assertSame(player, model.getCellValue(3, 5))
 
-    Assert.assertSame(player, model.getCell(4, 5).value)
+    Assert.assertSame(player, model.getCellValue(4, 5))
   }
 
   @Test def testChangePlayer = {
@@ -85,7 +85,7 @@ class ReversiModelTests {
     model.doMoveAt(1, 1)
 
     Assert.assertSame(Player.Player1, Player.Player1)	
-    Assert.assertNotSame(Player.Player1, model.getCell(1, 1).value)
+    Assert.assertNotSame(Player.Player1, model.getCellValue(1, 1))
   }
 
   @Test def testWrongMoveNoChange = {

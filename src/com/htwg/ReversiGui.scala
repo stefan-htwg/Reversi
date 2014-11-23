@@ -8,6 +8,7 @@ import scala.swing.GridBagPanel
 import scala.swing.Label
 import scala.swing.MainFrame
 import scala.swing.SimpleSwingApplication
+import java.awt.{ Color }
 
 //TODO show game state running / finished
 
@@ -22,10 +23,11 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
   var currentPlayerLabel = new Label(controller.getCurrentPlayer.toString)
   var player1Score = new Label(controller.getPlayer1Score.toString)
   var player2Score = new Label(controller.getPlayer2Score.toString)
+  var gameStatusLabel = new Label(controller.getGameStatus.toString)
   var gameStatus = new Label()
 
   reactions += {
-    case e: BoardChanged => updateUI
+    case e: GameStateChanged => updateUI
   }
 
   def top = new MainFrame {
@@ -33,6 +35,8 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
     contents =
       new BorderPanel {
         add(new FlowPanel {
+          contents += new Label("The game is: ")
+          contents += gameStatusLabel
           contents += new Label("Current player is: ")
           contents += currentPlayerLabel
           contents += new Label("Player 1 score: ")
@@ -58,19 +62,25 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
             }
           }, BorderPanel.Position.Center)
       }
+    updateUI
   }
 
   def updateUI = {
     buttons.foreach(item =>
       {
+        var cellValue = controller.getValueAt(item._1.x, item._1.y)
+        item._2.foreground = getPlayerColor(cellValue)
         item._2.text = controller.getValueAt(item._1.x, item._1.y).toString
         item._2.repaint
       })
     currentPlayerLabel.text = controller.getCurrentPlayer.toString
     player1Score.text = controller.getPlayer1Score.toString
     player2Score.text = controller.getPlayer2Score.toString
+    gameStatusLabel.text = controller.getGameStatus.toString
     currentPlayerLabel.repaint
   }
+
+  def getPlayerColor(cellValue: Integer) = if (cellValue == Player.Player1) Color.red else if (cellValue == Player.Player2) Color.blue else Color.black
 
   class Position(val x: Integer, val y: Integer)
 }

@@ -4,7 +4,7 @@ import scala.swing.Publisher
 import scala.swing.event.Event
 import scala.swing.Frame
 
-case class BoardChanged() extends Event
+case class GameStateChanged() extends Event
 
 class Controller(var model: ReversiModel) extends Publisher {
 
@@ -16,19 +16,18 @@ class Controller(var model: ReversiModel) extends Publisher {
       // TODO check bounds
 
       model.doMoveAt(col, row)
-      publish(new BoardChanged)
+      publish(new GameStateChanged)
     }
 
-  def getValueAt(column: Integer, row: Integer) = model.getCell(column, row).toString
+  def getValueAt(column: Integer, row: Integer) = model.getCellValue(column, row)
 
   def getCurrentPlayer = model.getPlayer
-
-  def getModel = model
 
   def getPlayer1Score = model.getPlayerScore(Player.Player1)
 
   def getPlayer2Score = model.getPlayerScore(Player.Player2)
+  
+  def getGameStatus = model.getGameStatus
 
   override def toString = model.toString
-
 }

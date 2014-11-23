@@ -6,7 +6,7 @@ class ReversiTui(controller: Controller) extends Reactor {
   listenTo(controller)
 
   reactions += {
-    case e: BoardChanged => println("Changed")
+    case e: GameStateChanged => println("Changed")
   }
 
   def startup(args: Array[String]): Unit =

@@ -24,39 +24,33 @@ class ReversiModel(cols: Integer, rows: Integer) {
   // ---    end 		initialization
 
   // ---    start 		constructor
-  def this() {
-    this(8, 8)
-  }
+  
+  def this() = this(8, 8)
 
   // ---    end 		constructor
 
   // ---    start 		public methods
 
   //register click on the board.
-  def doMoveAt(x: Int, y: Int) {
-    doMove(x, y);
-  }
+  def doMoveAt(x: Int, y: Int) = doMove(x, y);
 
   def reset(x: Integer, y: Integer, startWithPlayer: Integer) {
     numMoves = 0
     initializeBoard(x, y)
     gameStatus = GameStatus.InProgress
     currentPlayer = if (startWithPlayer == Player.Player1) Player.Player1 else Player.Player2
-    //nextMove()
   }
 
+  def getGameStatus = gameStatus 
+  
   def reset(startWithPlayer: Int): Unit = reset(max_cols, max_rows, startWithPlayer)
   def reset(): Unit = reset(max_cols, max_rows, Player.Player1)
 
   def getPlayer = currentPlayer
 
-  def getPlayerScore(player: Int) = {
-    calculateScore(player)
-  }
+  def getPlayerScore(player: Int) = calculateScore(player)
 
-  def getCell(column: Int, row: Int): Cell = {
-    board.cells(column - 1)(row - 1)
-  }
+  def getCellValue(column: Int, row: Int): Int = getCell(column, row).value
 
   override def toString = board.toString
 
@@ -64,24 +58,16 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
   // ---    start 		private methods
 
-  private def setAt(column: Int, row: Int, value: Int) {
-    getCell(column, row).set(value)
-  }
+  private def getCell(column: Int, row: Int): Cell = board.cells(column - 1)(row - 1)
 
-  private def getAt(column: Int, row: Int): Int = {
-    getCell(column, row).value
-  }
-
-  private def setCell(cell: Cell) {
-    board.setCell(cell);
-  }
+  private def setCellValueAt(column: Int, row: Int, value: Int) = getCell(column, row).set(value)
 
   private def initializeBoard(x: Integer, y: Integer) {
     board = new Board(x, y)
-    setAt(max_cols / 2, max_rows / 2, Player.Player1)
-    setAt((max_cols / 2) + 1, (max_rows / 2) + 1, Player.Player1)
-    setAt(max_cols / 2, (max_rows / 2) + 1, Player.Player2)
-    setAt((max_cols / 2) + 1, max_rows / 2, Player.Player2)
+    setCellValueAt(max_cols / 2, max_rows / 2, Player.Player1)
+    setCellValueAt((max_cols / 2) + 1, (max_rows / 2) + 1, Player.Player1)
+    setCellValueAt(max_cols / 2, (max_rows / 2) + 1, Player.Player2)
+    setCellValueAt((max_cols / 2) + 1, max_rows / 2, Player.Player2)
   }
 
   //private def getTotalScore() = {
@@ -95,7 +81,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
   private def calculateScore(icol: Int): Int = {
     var sum = 0;
     for (column <- 1 to max_cols; row <- 1 to max_rows) {
-      if (getAt(column, row) == icol) {
+      if (getCellValue(column, row) == icol) {
         sum += 1;
       }
     }
@@ -138,14 +124,14 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
       }
 
-      if (getAt(x + xoff, y + yoff) == sqblank) {
+      if (getCellValue(x + xoff, y + yoff) == sqblank) {
         return false;
       }
 
       //one square of opposite color before a square of the same color.
-      if (getAt(x + xoff, y + yoff) == thatcolor &&
+      if (getCellValue(x + xoff, y + yoff) == thatcolor &&
         (
-          getAt(x + xoff + xoff, y + yoff + yoff) == thiscolor || canCaptureDir(x + xoff, y + yoff, xoff, yoff, thiscolor))) {
+          getCellValue(x + xoff + xoff, y + yoff + yoff) == thiscolor || canCaptureDir(x + xoff, y + yoff, xoff, yoff, thiscolor))) {
         return true;
       }
       return false;
@@ -161,7 +147,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
       log("out of bounce");
       return false;
     }
-    if (getAt(columns, rows) != sqblank) {
+    if (getCellValue(columns, rows) != sqblank) {
       log("not empty");
       return false;
     }
@@ -212,7 +198,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
       gameStatus = GameStatus.GameOver //gameover();
       return
     }
-    
+
     if (currentPlayer == Player.Player2 && validMovesExist(Player.Player1)) {
       currentPlayer = Player.Player1;
       log("validmovesexist player1=1!")
@@ -245,7 +231,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
     if (thiscolor == 1) { thatcolor = 2; }
     if (thiscolor == 2) { thatcolor = 1; }
 
-    if (getAt(x + xoff, y + yoff) == thatcolor) {
+    if (getCellValue(x + xoff, y + yoff) == thatcolor) {
       result += 1;
       result += scoreInBetweensDir(x + xoff, y + yoff, xoff, yoff, thiscolor);
     }
@@ -284,8 +270,8 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
     if (thiscolor == 1) { thatcolor = 2; }
     if (thiscolor == 2) { thatcolor = 1; }
-    if (getAt(x + xoff, y + yoff) == thatcolor) {
-      setAt(x + xoff, y + yoff, thiscolor);
+    if (getCellValue(x + xoff, y + yoff) == thatcolor) {
+      setCellValueAt(x + xoff, y + yoff, thiscolor);
       doInBetweensDir(x + xoff, y + yoff, xoff, yoff, thiscolor);
     }
 
@@ -294,7 +280,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
   private def doMove(x: Int, y: Int) {
 
     if (isValidMove(x, y, currentPlayer)) {
-      setAt(x, y, currentPlayer);
+      setCellValueAt(x, y, currentPlayer);
 
       doInBetweens(x, y, currentPlayer);
 
