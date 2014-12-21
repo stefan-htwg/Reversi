@@ -5,13 +5,21 @@ import scala.swing.event.Event
 import scala.swing.Frame
 
 case class GameStateChanged() extends Event
+case class BoardChanged() extends Event
 
 class Controller(var model: ReversiModel) extends Publisher {
 
-  def reset(col: Int, row: Int, startWithPlayer: Integer) = model.reset(col, row, startWithPlayer)
-  def reset(startWithPlayer: Integer) = model.reset(startWithPlayer)
-
-  def setCell(col: Integer, row: Integer) =
+  def reset(col: Int, row: Int, startWithPlayer: Integer) {
+   model.reset(col, row, startWithPlayer)
+   publish(new BoardChanged) // TODO move to model
+  } 
+  
+  def reset(startWithPlayer: Integer) {
+   model.reset(startWithPlayer)
+   publish(new BoardChanged) // TODO move to model
+  }
+  
+  def setCell(col: Integer, row: Integer) 
     {
       // TODO check bounds
 

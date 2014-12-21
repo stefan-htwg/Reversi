@@ -7,6 +7,11 @@ class ReversiTui(controller: Controller) extends Reactor {
 
   reactions += {
     case e: GameStateChanged => println("Changed")
+    case e: BoardChanged => reDraw
+  }
+  
+  def reDraw(){
+    print(controller.toString())
   }
 
   def startup(args: Array[String]): Unit =
@@ -30,8 +35,7 @@ class ReversiTui(controller: Controller) extends Reactor {
           }
           case "r" => {
             println("Game reset!")
-            controller.reset(size, size, startWithPlayer)
-            print(controller.toString())
+            controller.reset(size,size,startWithPlayer)
           }
           case "black" => {
             println("black starts")
@@ -42,16 +46,19 @@ class ReversiTui(controller: Controller) extends Reactor {
             startWithPlayer = Player.Player2
           }
           case "size1" => {
-            println("change size 4x4")
-            size = 4
+            size=4
+            println("change size "+size+"x"+size)
+             controller.reset(size,size,startWithPlayer)
           }
           case "size2" => {
-            println("change size 6x6")
-            size = 6
+            size=6
+            println("change size "+size+"x"+size)
+             controller.reset(size,size,startWithPlayer)
           }
           case "size3" => {
-            println("change size 8x8")
-            size = 6
+            size=8
+            println("change size "+size+"x"+size)
+            controller.reset(size,size,startWithPlayer)
           }
           case _ => {
             println("input!")
