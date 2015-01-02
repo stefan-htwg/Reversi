@@ -98,6 +98,6 @@ class ReversiModelTests {
     Assert.assertSame(player, model.getPlayer)
     Assert.assertSame(score, model.getPlayerScore(player))
   }
-
+  
   private def getNextPlayer(current: Integer) = if (current == Player.Player1) Player.Player2 else Player.Player1
 }

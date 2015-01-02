@@ -31,14 +31,19 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
   // ---    start 		public methods
 
-  //register click on the board.
+  // register click on the board.
   def doMoveAt(x: Int, y: Int) = doMove(x, y);
 
   def reset(x: Integer, y: Integer, startWithPlayer: Integer) {
+    if(x < 1 || y < 1)
+      return
+    if(startWithPlayer != Player.Player1 && startWithPlayer != Player.Player2)
+      return
+    
     numMoves = 0
     initializeBoard(x, y)
     gameStatus = GameStatus.InProgress
-    currentPlayer = if (startWithPlayer == Player.Player1) Player.Player1 else Player.Player2
+    currentPlayer = startWithPlayer
   }
 
   def getGameStatus = gameStatus 
@@ -70,13 +75,7 @@ class ReversiModel(cols: Integer, rows: Integer) {
     setCellValueAt((max_cols / 2) + 1, max_rows / 2, Player.Player2)
   }
 
-  //private def getTotalScore() = {
-  //  val wtscore = getPlayerScore(player2);
-  //  val bkscore = getPlayerScore(player1);
-  //  showScore(wtscore, bkscore);
-  //}
-
-  private def getScoreForPlayer(player: Int) = if (player == 1) getPlayerScore(Player.Player2) else getPlayerScore(Player.Player1)
+  private def getScoreForPlayer(player: Int) = if (player == Player.Player1) getPlayerScore(Player.Player1) else getPlayerScore(Player.Player2)
 
   private def calculateScore(icol: Int): Int = {
     var sum = 0;
@@ -172,30 +171,9 @@ class ReversiModel(cols: Integer, rows: Integer) {
       return false;
     }
 
-  /*
-  private def gameover() {
-    var wtscore = calculateScore(player2);
-    var bkscore = calculateScore(player1);
-    var winner = ""
-
-    if (wtscore > bkscore) {
-      winner = "Winner is White";
-    } else if (bkscore > wtscore) {
-      winner = "Winner is Black";
-    } else if (wtscore == bkscore) {
-      winner = "Draw";
-    }
-
-    //TODO move to gui
-    println("Game over!\n\nScore is:\nwhite " + calculateScore(player2) + "\nblack " + calculateScore(player1) + "\n" + winner);
-  }
-  */
-
   private def prepareNextMove() {
-    //getTotalScore();
-
     if (isGameOver) {
-      gameStatus = GameStatus.GameOver //gameover();
+      gameStatus = GameStatus.GameOver 
       return
     }
 
