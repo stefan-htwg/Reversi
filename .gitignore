@@ -19,7 +19,7 @@ project/plugins/project/
 # .classpath
 # .project
 .cache
-.settings
+# .settings
 
 # system specific
 .DS_Store
