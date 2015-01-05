@@ -5,7 +5,8 @@ class Board(size: Size) {
 
   reset
 
-  def setCell(cell: Cell): Unit = _cells(cell.position.column - 1)(cell.position.row - 1) = cell
+  def setCell(cell: Cell): Unit = setCellInternal(cell.position.column - 1, cell.position.row - 1, cell)
+  private def setCellInternal(column: Integer, row:Integer, cell: Cell) = _cells(column)(row) = cell
   def getCell(position: Position) = _cells(position.column - 1)(position.row - 1)
 
   def findEmpty(col: Int): Integer = {
@@ -19,7 +20,7 @@ class Board(size: Size) {
 
   def reset() {
     for (column <- 0 until size.x; row <- 0 until size.y) {
-      setCell(new Cell(new Position(column, row)))
+      setCellInternal(column, row, new Cell(new Position(column, row)))
     }
   }
 
