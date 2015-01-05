@@ -10,7 +10,7 @@ case class BoardChanged() extends Event
 class Controller(var model: ReversiModel) extends Publisher {
 
   def reset(col: Int, row: Int, startWithPlayer: Integer) {
-   model.reset(col, row, startWithPlayer)
+   model.reset(new Size(col, row), startWithPlayer)
    publish(new BoardChanged) // TODO move to model
   } 
   
@@ -23,11 +23,11 @@ class Controller(var model: ReversiModel) extends Publisher {
     {
       // TODO check bounds
 
-      model.doMoveAt(col, row)
+      model.doMoveAt(new Position(col, row))
       publish(new GameStateChanged)
     }
 
-  def getValueAt(column: Integer, row: Integer) = model.getCellValue(column, row)
+  def getValueAt(column: Integer, row: Integer) = model.getCellValue(new Position(column, row))
 
   def getCurrentPlayer = model.getPlayer
 

@@ -1,61 +1,46 @@
 package com.htwg
 
-class ReversiModel(cols: Integer, rows: Integer) {
-
-  // ---    start 		initialization
-  private var max_cols = cols
-  private var max_rows = rows
-
+class ReversiModel(boardSize: Size) {
   private var gameStatus = GameStatus.NotStarted
-
-  private var board = new Board(max_cols, max_rows)
+  private var board = new Board(boardSize)
 
   private var currentPlayer = Player.Player1
   private var numMoves = 0
-  private val sqblank = 0
   private val debugMode = false
 
-  //TODO active computer player by GUI
   private val computerPlaysAsPlayer2 = false;
   private val computerPlaysAsPlayer1 = false;
 
   reset(Player.Player1);
 
-  // ---    end 		initialization
-
-  // ---    start 		constructor
-  
-  def this() = this(8, 8)
-
-  // ---    end 		constructor
+  def this() = this(new Size(8, 8))
 
   // ---    start 		public methods
 
-  // register click on the board.
-  def doMoveAt(x: Int, y: Int) = doMove(x, y);
+  def doMoveAt(position: Position) = doMove(position);
 
-  def reset(x: Integer, y: Integer, startWithPlayer: Integer) {
-    if(x < 1 || y < 1)
+  def reset(size: Size, startWithPlayer: Integer) {
+    if (size.x < 1 || size.y < 1)
       return
-    if(startWithPlayer != Player.Player1 && startWithPlayer != Player.Player2)
+    if (startWithPlayer != Player.Player1 && startWithPlayer != Player.Player2)
       return
-    
+
     numMoves = 0
-    initializeBoard(x, y)
+    initializeBoard(size)
     gameStatus = GameStatus.InProgress
     currentPlayer = startWithPlayer
   }
 
-  def getGameStatus = gameStatus 
-  
-  def reset(startWithPlayer: Int): Unit = reset(max_cols, max_rows, startWithPlayer)
-  def reset(): Unit = reset(max_cols, max_rows, Player.Player1)
+  def getGameStatus = gameStatus
+
+  def reset(startWithPlayer: Int): Unit = reset(boardSize, startWithPlayer)
+  def reset(): Unit = reset(boardSize, Player.Player1)
 
   def getPlayer = currentPlayer
 
   def getPlayerScore(player: Int) = calculateScore(player)
 
-  def getCellValue(column: Int, row: Int): Int = getCell(column, row).value
+  def getCellValue(position: Position): Int = getCell(position).value
 
   override def toString = board.toString
 
@@ -63,250 +48,208 @@ class ReversiModel(cols: Integer, rows: Integer) {
 
   // ---    start 		private methods
 
-  private def getCell(column: Int, row: Int): Cell = board.cells(column - 1)(row - 1)
+  private def getCell(position: Position): Cell = board.getCell(position)
+  private def setCell(cell: Cell) = board.setCell(cell)
+  private def setCellValueAt(position: Position, value: Int) = setCell(new Cell(position, value))
 
-  private def setCellValueAt(column: Int, row: Int, value: Int) = getCell(column, row).set(value)
+  private def cellIsEmpty(position: Position): Boolean = getCell(position).empty
+  private def cellIsNotEmpty(position: Position): Boolean = !cellIsEmpty(position)
 
-  private def initializeBoard(x: Integer, y: Integer) {
-    board = new Board(x, y)
-    setCellValueAt(max_cols / 2, max_rows / 2, Player.Player1)
-    setCellValueAt((max_cols / 2) + 1, (max_rows / 2) + 1, Player.Player1)
-    setCellValueAt(max_cols / 2, (max_rows / 2) + 1, Player.Player2)
-    setCellValueAt((max_cols / 2) + 1, max_rows / 2, Player.Player2)
+  private def initializeBoard(size: Size) {
+    board = new Board(size)
+    var center = boardSize.center
+    setCellValueAt(center, Player.Player1)
+    setCellValueAt(center add (new Position(1, 1)), Player.Player1)
+    setCellValueAt(center add (new Position(0, 1)), Player.Player2)
+    setCellValueAt(center add (new Position(1, 0)), Player.Player2)
   }
 
   private def getScoreForPlayer(player: Int) = if (player == Player.Player1) getPlayerScore(Player.Player1) else getPlayerScore(Player.Player2)
 
-  private def calculateScore(icol: Int): Int = {
+  private def calculateScore(player: Int): Int = {
     var sum = 0;
-    for (column <- 1 to max_cols; row <- 1 to max_rows) {
-      if (getCellValue(column, row) == icol) {
+    for (column <- 1 to boardSize.x; row <- 1 to boardSize.y) {
+      if (getCellValue(new Position(column, row)) == player) {
         sum += 1;
       }
     }
     sum
   }
 
-  //TODO move to gui
-  //private def showScore(wtscore: Int, bkscore: Int) {
-  //  println("score white:" + wtscore + " black:" + bkscore)
-  //}
-
-  private def canCapture(x: Int, y: Int, n: Int): Boolean =
-    {
-
-      for (a <- -1 to 1; b <- -1 to 1) {
-        if (!(a == 0 && b == 0)) {
-          if (canCaptureDir(x, y, a, b, n))
-            return true;
-        }
+  private def canCapture(position: Position, player: Int): Boolean = {
+    for (a <- -1 to 1; b <- -1 to 1) {
+      var offset = new Position(a, b)
+      if (isNotAEmptyOffset(offset)) {
+        if (canCaptureDir(position, offset, player))
+          return true;
       }
-      return false;
-
     }
-
-  private def canCaptureDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Boolean =
-    {
-      var thiscolor = n;
-      var thatcolor = 0;
-
-      if (thiscolor == 1) {
-        thatcolor = 2
-      }
-      if (thiscolor == 2) { thatcolor = 1 }
-
-      if (x + xoff + xoff < 1 ||
-        x + xoff + xoff > max_cols ||
-        y + yoff + yoff < 1 ||
-        y + yoff + yoff > max_rows) {
-        return false;
-
-      }
-
-      if (getCellValue(x + xoff, y + yoff) == sqblank) {
-        return false;
-      }
-
-      //one square of opposite color before a square of the same color.
-      if (getCellValue(x + xoff, y + yoff) == thatcolor &&
-        (
-          getCellValue(x + xoff + xoff, y + yoff + yoff) == thiscolor || canCaptureDir(x + xoff, y + yoff, xoff, yoff, thiscolor))) {
-        return true;
-      }
-      return false;
-    }
-
-  private def log(str: String) {
-    if (debugMode) println(str)
+    return false;
   }
 
-  private def isValidMove(columns: Int, rows: Int, n: Int): Boolean = {
+  private def canCaptureDir(position: Position, offset: Position, player: Int): Boolean = {
+    var current = player;
+    var opponent = 0;
+    if (current == 1) { opponent = 2 }
+    if (current == 2) { opponent = 1 }
 
-    if (columns < 1 || columns > max_cols || rows < 1 || rows > max_rows) {
-      log("out of bounce");
+    var positionWithOffset = position add (offset)
+    var positionWithTwoTimesTheOffset = positionWithOffset add (offset)
+
+    if (positionWithTwoTimesTheOffset isOutOfBounce (boardSize)) return false
+    if (cellIsEmpty(positionWithOffset)) return false;
+
+    //one square of opposite color before a square of the same color.
+    if (getCellValue(positionWithOffset) == opponent) {
+      if (getCellValue(positionWithTwoTimesTheOffset) == current
+        || canCaptureDir(positionWithOffset, offset, current)) {
+        return true
+      }
+    }
+    return false;
+  }
+
+  private def isValidMove(position: Position, player: Int): Boolean = {
+
+    if (position isOutOfBounce (boardSize)) return false
+
+    if (cellIsNotEmpty(position)) {
+      Logger.info("Is not a valid move at: Column: " + position.column + " Row: " + position.row + ". Cell was not emtpy.");
       return false;
     }
-    if (getCellValue(columns, rows) != sqblank) {
-      log("not empty");
-      return false;
-    }
 
-    if (canCapture(columns, rows, n) != true) {
-      log("nothing is captured");
-      return false;
-    }
+    if (!canCapture(position, player)) return false
 
-    log("isValidMove: x/y=player" + columns + "/" + rows + "=" + n)
-
+    Logger.info("Is a valid move at: Column: " + position.column + " Row: " + position.row + ". For Player: " + currentPlayer + ".")
     return true;
   }
+  private def isNotAValidMove(position: Position, player: Int): Boolean = !isValidMove(position, player)
 
-  private def validMovesExist(n: Int): Boolean =
-    {
-      for (i <- 1 to max_cols; j <- 1 to max_rows) {
-        if (isValidMove(i, j, n)) {
-          return true;
-        }
-      }
-      return false;
+  private def validMoveExistsFor(player: Int): Boolean = {
+    for (column <- 1 to boardSize.x; row <- 1 to boardSize.y) {
+      if (isValidMove(new Position(column, row), player)) return true
     }
+    return false;
+  }
+
+  private def validMoveDoesNotExistFor(player: Int): Boolean = !validMoveExistsFor(player)
 
   private def prepareNextMove() {
-    if (isGameOver) {
-      gameStatus = GameStatus.GameOver 
+    if (gameIsOver) {
+      gameStatus = GameStatus.GameOver
       return
     }
 
-    if (currentPlayer == Player.Player2 && validMovesExist(Player.Player1)) {
-      currentPlayer = Player.Player1;
-      log("validmovesexist player1=1!")
-    } else {
-      if (currentPlayer == Player.Player1 && validMovesExist(Player.Player2)) {
-        currentPlayer = Player.Player2
-        log("validmovesexist player2=2!")
-      }
-    }
+    numMoves += 1;
+    if (currentPlayer == Player.Player2) currentPlayer = Player.Player1
+    else currentPlayer = Player.Player2
 
     if (isComputersMove) {
-      //TODO move to gui
-      println("computer move: ")
-
-      doComputersMove;
+      Logger.info("computers move: ")
+      doComputersMove
     } else {
-      //TODO move to gui
-      println("nextMove: " + currentPlayer)
+      Logger.info("nextMove: " + currentPlayer)
     }
-
-    numMoves += 1;
   }
 
-  private def isGameOver = !validMovesExist(Player.Player1) && !validMovesExist(Player.Player2)
+  private def gameCanBeContinued: Boolean =
+    return (currentPlayer == Player.Player2 && validMoveExistsFor(Player.Player1)) ||
+      (currentPlayer == Player.Player1 && validMoveExistsFor(Player.Player2))
 
-  private def scoreInBetweensDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int): Int = {
-    var thiscolor = n;
-    var thatcolor = 0;
+  private def gameIsOver: Boolean = !gameCanBeContinued
+
+  private def scoreInBetweensDir(position: Position, offset: Position, player: Int): Int = {
+    var current = player;
+    var opponent = 0;
     var result = 0;
-    if (thiscolor == 1) { thatcolor = 2; }
-    if (thiscolor == 2) { thatcolor = 1; }
+    if (current == 1) opponent = 2
+    if (current == 2) opponent = 1
 
-    if (getCellValue(x + xoff, y + yoff) == thatcolor) {
+    if (getCellValue(position add (offset)) == opponent) {
       result += 1;
-      result += scoreInBetweensDir(x + xoff, y + yoff, xoff, yoff, thiscolor);
+      result += scoreInBetweensDir(position add (offset), offset, current);
     }
     return result;
   }
 
-  private def getValue(columns: Int, rows: Int, icol: Int): Int = {
-    var score = 0;
-    if (isValidMove(columns, rows, icol)) {
-      score = 1;
+  private def getScore(position: Position, player: Int): Int = {
+    if (isNotAValidMove(position, player)) return 0
 
-      for (x <- -1 to 1; y <- -1 to 1) {
-        if (!(x == 0 && y == 0)) {
-          if (canCaptureDir(columns, rows, x, y, icol)) {
-            score = score + scoreInBetweensDir(columns, rows, x, y, icol);
-          }
+    var score = 1;
+    for (columnOffset <- -1 to 1; rowOffset <- -1 to 1) {
+      var offset = new Position(columnOffset, rowOffset)
+      if (isNotAEmptyOffset(offset)) {
+        if (canCaptureDir(position, offset, player)) {
+          score = score + scoreInBetweensDir(position, offset, player);
         }
       }
     }
     return score
   }
 
-  private def doInBetweens(x: Int, y: Int, n: Int) {
-    for (i <- -1 to 1; j <- -1 to 1) {
-      if (!(i == 0 && j == 0)) {
-        if (canCaptureDir(x, y, i, j, n)) {
-          doInBetweensDir(x, y, i, j, n);
+  private def doInBetweens(position: Position, player: Int) {
+    for (columnOffset <- -1 to 1; rowOffset <- -1 to 1) {
+      var offset = new Position(columnOffset, rowOffset)
+      if (isNotAEmptyOffset(offset)) {
+        if (canCaptureDir(position, offset, player)) {
+          doInBetweensDir(position, offset, player);
         }
       }
     }
   }
 
-  private def doInBetweensDir(x: Int, y: Int, xoff: Int, yoff: Int, n: Int) {
-    var thiscolor = n;
-    var thatcolor = 0;
+  private def isEmptyOffset(offset: Position): Boolean = offset.column == 0 && offset.row == 0
+  private def isNotAEmptyOffset(offset: Position): Boolean = !isEmptyOffset(offset)
 
-    if (thiscolor == 1) { thatcolor = 2; }
-    if (thiscolor == 2) { thatcolor = 1; }
-    if (getCellValue(x + xoff, y + yoff) == thatcolor) {
-      setCellValueAt(x + xoff, y + yoff, thiscolor);
-      doInBetweensDir(x + xoff, y + yoff, xoff, yoff, thiscolor);
+  private def doInBetweensDir(position: Position, offset: Position, player: Int) {
+    var current = player;
+    var opponent = 0;
+    if (current == 1) { opponent = 2; }
+    if (current == 2) { opponent = 1; }
+
+    if (getCellValue(position add (offset)) == opponent) {
+      setCellValueAt(position add (offset), current);
+      doInBetweensDir(position add (offset), offset, current);
     }
-
   }
 
-  private def doMove(x: Int, y: Int) {
-
-    if (isValidMove(x, y, currentPlayer)) {
-      setCellValueAt(x, y, currentPlayer);
-
-      doInBetweens(x, y, currentPlayer);
-
-      prepareNextMove();
-    } else {
-      //TODO move to gui
-      //println("not a valid move");
+  private def doMove(position: Position) {
+    if (!isValidMove(position, currentPlayer)) {
+      Logger.info("not a valid move");
+      return ;
     }
+
+    setCellValueAt(position, currentPlayer);
+    doInBetweens(position, currentPlayer);
+    prepareNextMove();
   }
 
   private def isComputersMove(): Boolean = {
-    //if whoseturn is computer's move return true
-
-    if (computerPlaysAsPlayer2 == true && currentPlayer == Player.Player2) { return true; }
-    if (computerPlaysAsPlayer1 == true && currentPlayer == Player.Player1) { return true; }
-
+    if (computerPlaysAsPlayer2 && currentPlayer == Player.Player2) return true
+    if (computerPlaysAsPlayer1 && currentPlayer == Player.Player1) return true
     return false;
   }
 
   private def doComputersMove {
+    var bestPosition = findBestPosition
+    Logger.info("cp move:" + bestPosition.column + "/" + bestPosition.row);
+    doMove(bestPosition)
+  }
+
+  private def findBestPosition: Position = {
     var highscore = 0.0
-    var lowscore = 0.0
-    var lowx = 0
-    var lowy = 0
+    var bestPosition = new Position(0, 0)
 
-    var highx = 0
-    var highy = 0
+    for (column <- 1 to boardSize.x; row <- 1 to boardSize.y) {
+      var position = new Position(column, row)
+      var score = getScore(position, currentPlayer);
 
-    for (columns <- 1 to max_cols; rows <- 1 to max_rows) {
-      var currscore = getValue(columns, rows, currentPlayer);
-
-      if (currscore > highscore) {
-        highx = columns;
-        highy = rows;
-        highscore = currscore;
+      if (score > highscore) {
+        bestPosition = position
+        highscore = score;
       }
-
-      if (currscore > 0 && (lowscore == 0.0 || currscore < highscore)) {
-        lowx = columns;
-        lowy = rows;
-        lowscore = currscore;
-      }
-
     }
-
-    //TODO move to gui
-    println("cp move:" + highx + "/" + highy);
-    doMove(highx, highy)
+    return bestPosition
   }
 
   // ---    end 		private methods

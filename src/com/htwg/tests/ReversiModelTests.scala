@@ -6,6 +6,7 @@ import org.junit.Test
 
 import com.htwg.ReversiModel
 import com.htwg.Player
+import com.htwg.Position
 
 class ReversiModelTests {
 
@@ -38,20 +39,20 @@ class ReversiModelTests {
     val player = model.getPlayer
     val nextPlayer = getNextPlayer(model.getPlayer)
 
-    Assert.assertSame(nextPlayer, model.getCellValue(4, 5))
+    Assert.assertSame(nextPlayer, model.getCellValue(new Position(4, 5)))
 
-    model.doMoveAt(3, 5)
+    model.doMoveAt(new Position(3, 5))
 
-    Assert.assertSame(player, model.getCellValue(3, 5))
+    Assert.assertSame(player, model.getCellValue(new Position(3, 5)))
 
-    Assert.assertSame(player, model.getCellValue(4, 5))
+    Assert.assertSame(player, model.getCellValue(new Position(4, 5)))
   }
 
   @Test def testChangePlayer = {
     val model = new ReversiModel()
     val player = model.getPlayer
 
-    model.doMoveAt(3, 5)
+    model.doMoveAt(new Position(3, 5))
 
     Assert.assertNotSame(player, model.getPlayer)
   }
@@ -63,7 +64,7 @@ class ReversiModelTests {
     var score = model.getPlayerScore(player)
     var nextScore = model.getPlayerScore(nextPlayer)
 
-    model.doMoveAt(3, 5)
+    model.doMoveAt(new Position(3, 5))
 
     Assert.assertSame(score + 2, model.getPlayerScore(player))
 
@@ -75,17 +76,17 @@ class ReversiModelTests {
     val nextPlayer = getNextPlayer(model.getPlayer)
     var nextScore = model.getPlayerScore(nextPlayer)
 
-    model.doMoveAt(3, 5)
+    model.doMoveAt(new Position(3, 5))
 
     Assert.assertSame(nextScore - 1, model.getPlayerScore(nextPlayer))
   }
 
   @Test def testWrongMove = {
     val model = new ReversiModel()
-    model.doMoveAt(1, 1)
+    model.doMoveAt(new Position(1, 1))
 
     Assert.assertSame(Player.Player1, Player.Player1)	
-    Assert.assertNotSame(Player.Player1, model.getCellValue(1, 1))
+    Assert.assertNotSame(Player.Player1, model.getCellValue(new Position(1, 1)))
   }
 
   @Test def testWrongMoveNoChange = {
@@ -93,7 +94,7 @@ class ReversiModelTests {
     val player = model.getPlayer
     val score = model.getPlayerScore(player)
 
-    model.doMoveAt(1, 1)
+    model.doMoveAt(new Position(1, 1))
 
     Assert.assertSame(player, model.getPlayer)
     Assert.assertSame(score, model.getPlayerScore(player))

@@ -1,24 +1,8 @@
 package com.htwg
 
-class Cell(c: Int, r: Int, v: Int) {
-  var value = v
-
-  def this(c: Int, r: Int) {
-    this(c, r, 0)
-  }
-
-  // Getter 
-  def row = r
-  def col = c
+class Cell(val position: Position, val value: Int) {
+  def this(position: Position) = this(position, 0)
   def empty = value == 0
-
-  def set(v: Int): Unit = {
-   value = v
-  }
   
   override def toString = value.toString.replace('0', ' ')
 }
-
-//val 
-//traids
-// abstractionen
