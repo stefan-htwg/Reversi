@@ -7,7 +7,7 @@ import scala.swing.Frame
 case class GameStateChanged() extends Event
 case class BoardChanged() extends Event
 
-class Controller(var model: ReversiModel) extends Publisher {
+class Controller(var model: GameEngine) extends Publisher {
 
   def reset(col: Int, row: Int, startWithPlayer: Integer) {
    model.reset(new Size(col, row), startWithPlayer)

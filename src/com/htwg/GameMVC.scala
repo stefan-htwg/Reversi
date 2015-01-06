@@ -2,7 +2,7 @@ package com.htwg
 
 object GameMVC {
   
-  var model = new ReversiModel();
+  var model = new GameEngine();
   var controller = new Controller(model)
   
   

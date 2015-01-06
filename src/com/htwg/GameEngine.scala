@@ -1,6 +1,6 @@
 package com.htwg
 
-class ReversiModel(boardSize: Size) {
+class GameEngine(boardSize: Size) {
   private var gameStatus = GameStatus.NotStarted
   private var board = new Board(boardSize)
 

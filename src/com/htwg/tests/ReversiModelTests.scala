@@ -4,38 +4,38 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-import com.htwg.ReversiModel
+import com.htwg.GameEngine
 import com.htwg.Player
 import com.htwg.Position
 
-class ReversiModelTests {
+class GameEngineTests {
 
   val noPlayer = 0
   var startPlayer = Player.Player1;
 
   @Before def initialize() {
-    val model = new ReversiModel()
+    val model = new GameEngine()
     model.reset(startPlayer)
   }
 
   @Test def testDefaultValues = {
-    val model = new ReversiModel()
+    val model = new GameEngine()
     Assert.assertSame(startPlayer, model.getPlayer)
   }
 
   @Test def testPlayer1Starter = {
-    val model = new ReversiModel()
+    val model = new GameEngine()
     Assert.assertSame(Player.Player1, model.getPlayer)
   }
 
   @Test def testWhiteStarter = {
-    val model = new ReversiModel()
+    val model = new GameEngine()
     model.reset(Player.Player2)
     Assert.assertSame(Player.Player2, model.getPlayer)
   }
 
   @Test def testFirstMove = {
-    val model = new ReversiModel()
+    val model = new GameEngine()
     val player = model.getPlayer
     val nextPlayer = getNextPlayer(model.getPlayer)
 
@@ -49,7 +49,7 @@ class ReversiModelTests {
   }
 
   @Test def testChangePlayer = {
-    val model = new ReversiModel()
+    val model = new GameEngine()
     val player = model.getPlayer
 
     model.doMoveAt(new Position(3, 5))
@@ -58,7 +58,7 @@ class ReversiModelTests {
   }
 
   @Test def testAddScore = {
-    val model = new ReversiModel()
+    val model = new GameEngine()
     val player = model.getPlayer
     val nextPlayer = getNextPlayer(model.getPlayer)
     var score = model.getPlayerScore(player)
@@ -72,7 +72,7 @@ class ReversiModelTests {
   }
 
   @Test def testRemoveScore = {
-    val model = new ReversiModel()
+    val model = new GameEngine()
     val nextPlayer = getNextPlayer(model.getPlayer)
     var nextScore = model.getPlayerScore(nextPlayer)
 
@@ -82,7 +82,7 @@ class ReversiModelTests {
   }
 
   @Test def testWrongMove = {
-    val model = new ReversiModel()
+    val model = new GameEngine()
     model.doMoveAt(new Position(1, 1))
 
     Assert.assertSame(Player.Player1, Player.Player1)	
@@ -90,7 +90,7 @@ class ReversiModelTests {
   }
 
   @Test def testWrongMoveNoChange = {
-    val model = new ReversiModel()
+    val model = new GameEngine()
     val player = model.getPlayer
     val score = model.getPlayerScore(player)
 
