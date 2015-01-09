@@ -13,7 +13,7 @@ import javax.swing.JFrame
 import java.awt.CardLayout
 import scala.swing.Dialog
 
-class ReversiGui(controller: Controller) extends SimpleSwingApplication {
+class ReversiGui(controller: Controller) extends SimpleSwingApplication with ReversiUi {
 
   val width = 8
   val height = 8
@@ -25,6 +25,10 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
   var player1Score = new Label(controller.getPlayer1Score.toString)
   var player2Score = new Label(controller.getPlayer2Score.toString)
   var gameStatus = new Label()
+
+  def run(args: Array[String]) {
+    startup(args)
+  }
 
   reactions += {
     case e: GameStateChanged => updateUI
@@ -107,7 +111,7 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
   def createWestArea: GridBagPanel = {
     return new GridBagPanel {
       val gbc = new Constraints()
-      
+
       gbc.gridx = 0
       gbc.gridy = 0
       add(new Label("Player 1: "), gbc)
@@ -121,7 +125,7 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication {
   def createEastArea(): GridBagPanel = {
     return new GridBagPanel {
       val gbc = new Constraints()
-      
+
       gbc.gridx = 0
       gbc.gridy = 0
       add(new Label("Player 2: "), gbc)

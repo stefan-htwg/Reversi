@@ -2,7 +2,7 @@ package com.htwg
 
 import scala.swing.Reactor
 
-class ReversiTui(controller: Controller) extends Reactor {
+class ReversiTui(controller: Controller) extends Reactor with ReversiUi{
   listenTo(controller)
 
   reactions += {
@@ -13,9 +13,8 @@ class ReversiTui(controller: Controller) extends Reactor {
   def reDraw(){
     print(controller.toString())
   }
-
-  def startup(args: Array[String]): Unit =
-    {
+  
+  def run(args: Array[String]) {
       var input = ""
       var startWithPlayer = controller.getCurrentPlayer
       var size = 8;

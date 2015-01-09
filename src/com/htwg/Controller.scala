@@ -11,18 +11,15 @@ class Controller(var model: GameEngine) extends Publisher {
 
   def reset(col: Int, row: Int, startWithPlayer: Integer) {
    model.reset(new Size(col, row), startWithPlayer)
-   publish(new BoardChanged) // TODO move to model
+   publish(new BoardChanged)
   } 
   
   def reset(startWithPlayer: Integer) {
    model.reset(startWithPlayer)
-   publish(new BoardChanged) // TODO move to model
+   publish(new BoardChanged)
   }
   
-  def setCell(col: Integer, row: Integer) 
-    {
-      // TODO check bounds
-
+  def setCell(col: Integer, row: Integer) {
       model.doMoveAt(new Position(col, row))
       publish(new GameStateChanged)
     }
