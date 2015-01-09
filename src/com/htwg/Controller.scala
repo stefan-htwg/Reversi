@@ -14,25 +14,25 @@ class Controller(var model: GameEngine) extends Publisher {
    publish(new BoardChanged)
   } 
   
-  def reset(startWithPlayer: Integer) {
-   model.reset(startWithPlayer)
+  def reset = {
+   model.reset
    publish(new BoardChanged)
   }
   
-  def setCell(col: Integer, row: Integer) {
-      model.doMoveAt(new Position(col, row))
+  def setValueAt(position: Position) {
+      model.doMoveAt(position)
       publish(new GameStateChanged)
     }
 
-  def getValueAt(column: Integer, row: Integer) = model.getCellValue(new Position(column, row))
-
-  def getCurrentPlayer = model.getPlayer
-
-  def getPlayer1Score = model.getPlayerScore(Player.Player1)
-
-  def getPlayer2Score = model.getPlayerScore(Player.Player2)
+  def getValueAt(position: Position) = model.getCellValue(position)
   
-  def getGameStatus = model.getGameStatus
+  def getCurrentPlayer = model getPlayer
 
-  override def toString = model.toString
+  def getPlayer1Score = model getScoreFor(Player One)
+
+  def getPlayer2Score = model getScoreFor(Player Two)
+  
+  def getGameStatus = model getGameStatus
+
+  override def toString = model toString
 }

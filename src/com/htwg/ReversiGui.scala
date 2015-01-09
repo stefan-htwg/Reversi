@@ -53,14 +53,14 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
       if (result == Dialog.Result.No)
         sys.exit(0)
 
-      controller.reset(1);
+      controller reset;
     }
 
     buttons.foreach(item =>
       {
         var column = item._1.column
         var row = item._1.row
-        var cellValue = controller.getValueAt(column, row)
+        var cellValue = controller.getValueAt(new Position(column, row))
         item._2.foreground = getPlayerColor(cellValue)
         item._2.text = if(cellValue == 0) "" else cellValue.toString
         item._2.repaint
@@ -99,9 +99,9 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
         for (x <- 1 to height) {
           gbc.gridx = x
           gbc.gridy = y
-          var button = new Button(Action(controller.getValueAt(x, y).toString) {
+          var button = new Button(Action(controller.getValueAt(new Position(x, y)).toString) {
             println("Try setting cell at: X: " + x + " Y: " + y)
-            controller.setCell(x, y)
+            controller.setValueAt(new Position(x, y))
           })
           buttons = Tuple2[Position, Button](new Position(x, y), button) :: buttons
           add(button, gbc)
@@ -138,5 +138,5 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
     }
   }
 
-  def getPlayerColor(cellValue: Integer) = if (cellValue == Player.Player1) Color.red else if (cellValue == Player.Player2) Color.blue else Color.black
+  def getPlayerColor(cellValue: Integer) = if (cellValue == Player.One) Color.red else if (cellValue == Player.Two) Color.blue else Color.black
 }

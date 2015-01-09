@@ -6,14 +6,14 @@ class GameEngine(boardSize: Size) {
   private var gameStatus = GameStatus.NotStarted
   private var board = new Board(boardSize)
 
-  private var currentPlayer = Player.Player1
+  private var currentPlayer = Player.One
   private var numMoves = 0
   private val debugMode = false
 
-  private val computerPlaysAsPlayer2 = false;
-  private val computerPlaysAsPlayer1 = false;
+  private val computerPlaysAsTwo = false;
+  private val computerPlaysAsOne = false;
 
-  reset(Player.Player1);
+  reset(Player.One);
 
   def this() = this(new Size(8, 8))
 
@@ -24,7 +24,7 @@ class GameEngine(boardSize: Size) {
   def reset(size: Size, startWithPlayer: Integer) {
     if (size.x < 1 || size.y < 1)
       return
-    if (startWithPlayer != Player.Player1 && startWithPlayer != Player.Player2)
+    if (startWithPlayer != Player.One && startWithPlayer != Player.Two)
       return
 
     numMoves = 0
@@ -36,11 +36,11 @@ class GameEngine(boardSize: Size) {
   def getGameStatus = gameStatus
 
   def reset(startWithPlayer: Int): Unit = reset(boardSize, startWithPlayer)
-  def reset(): Unit = reset(boardSize, Player.Player1)
+  def reset(): Unit = reset(boardSize, Player.One)
 
   def getPlayer = currentPlayer
 
-  def getPlayerScore(player: Int) = calculateScore(player)
+  def getScoreFor(player: Int) = calculateScore(player)
 
   def getCellValue(position: Position): Int = getCell(position).value
 
@@ -60,13 +60,13 @@ class GameEngine(boardSize: Size) {
   private def initializeBoard(size: Size) {
     board = new Board(size)
     var center = boardSize.center
-    setCellValueAt(center, Player.Player1)
-    setCellValueAt(center add (new Position(1, 1)), Player.Player1)
-    setCellValueAt(center add (new Position(0, 1)), Player.Player2)
-    setCellValueAt(center add (new Position(1, 0)), Player.Player2)
+    setCellValueAt(center, Player.One)
+    setCellValueAt(center add (new Position(1, 1)), Player.One)
+    setCellValueAt(center add (new Position(0, 1)), Player.Two)
+    setCellValueAt(center add (new Position(1, 0)), Player.Two)
   }
 
-  private def getScoreForPlayer(player: Int) = if (player == Player.Player1) getPlayerScore(Player.Player1) else getPlayerScore(Player.Player2)
+  private def getScoreForPlayer(player: Int) = if (player == Player.One) getScoreFor(Player.One) else getScoreFor(Player.Two)
 
   private def calculateScore(player: Int): Int = {
     var sum = 0;
@@ -101,7 +101,6 @@ class GameEngine(boardSize: Size) {
     if (positionWithTwoTimesTheOffset isOutOfBounce (boardSize)) return false
     if (cellIsEmpty(positionWithOffset)) return false;
 
-    //one square of opposite color before a square of the same color.
     if (getCellValue(positionWithOffset) == opponent) {
       if (getCellValue(positionWithTwoTimesTheOffset) == current
         || canCaptureDir(positionWithOffset, offset, current)) {
@@ -143,8 +142,8 @@ class GameEngine(boardSize: Size) {
     }
 
     numMoves += 1;
-    if (currentPlayer == Player.Player2) currentPlayer = Player.Player1
-    else currentPlayer = Player.Player2
+    if (currentPlayer == Player.Two) currentPlayer = Player.One
+    else currentPlayer = Player.Two
 
     if (isComputersMove) {
       Logger.info("computers move: ")
@@ -155,8 +154,8 @@ class GameEngine(boardSize: Size) {
   }
 
   private def gameCanBeContinued: Boolean =
-    return (currentPlayer == Player.Player2 && validMoveExistsFor(Player.Player1)) ||
-      (currentPlayer == Player.Player1 && validMoveExistsFor(Player.Player2))
+    return (currentPlayer == Player.Two && validMoveExistsFor(Player.One)) ||
+      (currentPlayer == Player.One && validMoveExistsFor(Player.Two))
 
   private def gameIsOver: Boolean = !gameCanBeContinued
 
@@ -227,8 +226,8 @@ class GameEngine(boardSize: Size) {
   }
 
   private def isComputersMove(): Boolean = {
-    if (computerPlaysAsPlayer2 && currentPlayer == Player.Player2) return true
-    if (computerPlaysAsPlayer1 && currentPlayer == Player.Player1) return true
+    if (computerPlaysAsTwo && currentPlayer == Player.Two) return true
+    if (computerPlaysAsOne && currentPlayer == Player.One) return true
     return false;
   }
 
@@ -260,9 +259,4 @@ class GameEngine(boardSize: Size) {
 object GameStatus extends Enumeration {
   type GameStatus = Value
   val NotStarted, InProgress, GameOver = Value
-}
-
-object Player {
-  val Player1 = 1
-  val Player2 = 2
 }

@@ -10,7 +10,7 @@ import com.htwg.Position
 class GameEngineTests {
 
   val noPlayer = 0
-  var startPlayer = Player.Player1;
+  var startPlayer = Player.One;
 
   @Before def initialize() {
     val model = new GameEngine()
@@ -22,15 +22,15 @@ class GameEngineTests {
     Assert.assertSame(startPlayer, model.getPlayer)
   }
 
-  @Test def testPlayer1Starter = {
+  @Test def testOneStarter = {
     val model = new GameEngine()
-    Assert.assertSame(Player.Player1, model.getPlayer)
+    Assert.assertSame(Player.One, model.getPlayer)
   }
 
   @Test def testWhiteStarter = {
     val model = new GameEngine()
-    model.reset(Player.Player2)
-    Assert.assertSame(Player.Player2, model.getPlayer)
+    model.reset(Player.Two)
+    Assert.assertSame(Player.Two, model.getPlayer)
   }
 
   @Test def testFirstMove = {
@@ -60,44 +60,44 @@ class GameEngineTests {
     val model = new GameEngine()
     val player = model.getPlayer
     val nextPlayer = getNextPlayer(model.getPlayer)
-    var score = model.getPlayerScore(player)
-    var nextScore = model.getPlayerScore(nextPlayer)
+    var score = model.getScoreFor(player)
+    var nextScore = model.getScoreFor(nextPlayer)
 
     model.doMoveAt(new Position(3, 5))
 
-    Assert.assertSame(score + 2, model.getPlayerScore(player))
+    Assert.assertSame(score + 2, model.getScoreFor(player))
 
-    Assert.assertSame(nextScore - 1, model.getPlayerScore(nextPlayer))
+    Assert.assertSame(nextScore - 1, model.getScoreFor(nextPlayer))
   }
 
   @Test def testRemoveScore = {
     val model = new GameEngine()
     val nextPlayer = getNextPlayer(model.getPlayer)
-    var nextScore = model.getPlayerScore(nextPlayer)
+    var nextScore = model.getScoreFor(nextPlayer)
 
     model.doMoveAt(new Position(3, 5))
 
-    Assert.assertSame(nextScore - 1, model.getPlayerScore(nextPlayer))
+    Assert.assertSame(nextScore - 1, model.getScoreFor(nextPlayer))
   }
 
   @Test def testWrongMove = {
     val model = new GameEngine()
     model.doMoveAt(new Position(1, 1))
 
-    Assert.assertSame(Player.Player1, Player.Player1)	
-    Assert.assertNotSame(Player.Player1, model.getCellValue(new Position(1, 1)))
+    Assert.assertSame(Player.One, Player.One)	
+    Assert.assertNotSame(Player.One, model.getCellValue(new Position(1, 1)))
   }
 
   @Test def testWrongMoveNoChange = {
     val model = new GameEngine()
     val player = model.getPlayer
-    val score = model.getPlayerScore(player)
+    val score = model.getScoreFor(player)
 
     model.doMoveAt(new Position(1, 1))
 
     Assert.assertSame(player, model.getPlayer)
-    Assert.assertSame(score, model.getPlayerScore(player))
+    Assert.assertSame(score, model.getScoreFor(player))
   }
   
-  private def getNextPlayer(current: Integer) = if (current == Player.Player1) Player.Player2 else Player.Player1
+  private def getNextPlayer(current: Integer) = if (current == Player.One) Player.Two else Player.One
 }

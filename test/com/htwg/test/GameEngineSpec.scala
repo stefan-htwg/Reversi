@@ -11,7 +11,7 @@ class GameEngineSpec extends SpecificationWithJUnit {
     val model = new GameEngine()
 
     "start with player 1" in {
-      model.getPlayer must be_==(Player.Player1)
+      model.getPlayer must be_==(Player.One)
     }
   }
 
@@ -19,7 +19,7 @@ class GameEngineSpec extends SpecificationWithJUnit {
     val model = new GameEngine()
     val player = model.getPlayer
     val nextPlayer = getNextPlayer(model.getPlayer)
-    var score = model.getPlayerScore(player)
+    var score = model.getScoreFor(player)
     model.doMoveAt(new Position(3, 5))
 
     "own the field 3, 5" in {
@@ -31,7 +31,7 @@ class GameEngineSpec extends SpecificationWithJUnit {
     }
 
     "have two more points" in {
-      model.getPlayerScore(player) must be_==(score + 2)
+      model.getScoreFor(player) must be_==(score + 2)
     }
   }
 
@@ -49,11 +49,11 @@ class GameEngineSpec extends SpecificationWithJUnit {
   "If player on tries to make move at 1, 1 it" should {
     val model = new GameEngine()
     val player = model.getPlayer
-    val score = model.getPlayerScore(player)
+    val score = model.getScoreFor(player)
     model.doMoveAt(new Position(1, 1))
 
     "be still player 1 turn" in {
-      model.getPlayer must be_==(Player.Player1)
+      model.getPlayer must be_==(Player.One)
     }
 
     "not have been a successfull move" in {
@@ -61,9 +61,9 @@ class GameEngineSpec extends SpecificationWithJUnit {
     }
 
     "not have changed the scores" in {
-      model.getPlayerScore(player) must be_==(score)
+      model.getScoreFor(player) must be_==(score)
     }
   }
 
-  private def getNextPlayer(current: Integer) = if (current == Player.Player1) Player.Player2 else Player.Player1
+  private def getNextPlayer(current: Integer) = if (current == Player.One) Player.Two else Player.One
 }

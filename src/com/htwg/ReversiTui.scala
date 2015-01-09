@@ -38,11 +38,11 @@ class ReversiTui(controller: Controller) extends Reactor with ReversiUi{
           }
           case "black" => {
             println("black starts")
-            startWithPlayer = Player.Player1
+            startWithPlayer = Player.One
           }
           case "white" => {
             println("white starts")
-            startWithPlayer = Player.Player2
+            startWithPlayer = Player.Two
           }
           case "size1" => {
             size=4
@@ -64,7 +64,7 @@ class ReversiTui(controller: Controller) extends Reactor with ReversiUi{
             input.toList.filter(c => c != ' ').map(c => c.toString.toInt) match {
               case column :: row :: Nil => {
                 println("column/row: " + column + "/" + row)
-                controller.setCell(column, row)
+                controller.setValueAt(new Position(column, row))
                 println("Current player is: Player " + controller.getCurrentPlayer)
                 print(controller.toString)
               }
