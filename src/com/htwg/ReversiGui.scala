@@ -58,9 +58,11 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
 
     buttons.foreach(item =>
       {
-        var cellValue = controller.getValueAt(item._1.column, item._1.row)
+        var column = item._1.column
+        var row = item._1.row
+        var cellValue = controller.getValueAt(column, row)
         item._2.foreground = getPlayerColor(cellValue)
-        item._2.text = controller.getValueAt(item._1.column, item._1.row).toString
+        item._2.text = if(cellValue == 0) "" else cellValue.toString
         item._2.repaint
       })
     currentPlayerLabel.text = controller.getCurrentPlayer.toString

@@ -3,22 +3,19 @@ package com.htwg
 class Board(size: Size) {
   private val _cells = Array.ofDim[Cell](size.x, size.y)
 
-  private val _cellsAsList = createListOf(size);
+  init
 
-  reset
-
-  def setCell(cell: Cell): Unit = setCellInternal(cell.position.column - 1, cell.position.row - 1, cell)
-  private def setCellInternal(column: Integer, row: Integer, cell: Cell) = _cells(column)(row) = cell
+  def setCell(position: Position, cell: Cell): Unit = setCellInternal(position.column - 1, position.row - 1, cell)
+  private def setCellInternal(column: Integer, row: Integer, cell: Cell) = {
+    _cells(column)(row) = cell
+  }
   def getCell(position: Position) =  _cells(position.column - 1)(position.row - 1)
 
-  def reset() {
+  def init() {
     for (column <- 0 until size.x; row <- 0 until size.y) {
-      setCellInternal(column, row, new Cell(new Position(column, row)))
+      setCellInternal(column, row, new Cell)
     }
   }
-
-  def createListOf(size: Size) : List[List[Cell]] = List.tabulate(size.y)(y => createRow(y, size.x))
-  def createRow(rowCount: Integer, columns: Integer) : List[Cell] = List.tabulate(columns)(columnCount => new Cell(new Position(columnCount, rowCount)))
 
   override def toString(): String = {
     var ret = ""
@@ -30,7 +27,7 @@ class Board(size: Size) {
       }
       if (column == 0) ret += "|"
 
-      if (_cells(column)(row) != null && !_cells(column)(row).empty) {
+      if (_cells(column)(row) != null && !_cells(column)(row).isEmpty) {
         ret += _cells(column)(row).toString()
       } else {
         ret += " "

@@ -1,5 +1,7 @@
 package com.htwg
 
+import scalaz.IsEmpty
+
 class GameEngine(boardSize: Size) {
   private var gameStatus = GameStatus.NotStarted
   private var board = new Board(boardSize)
@@ -49,10 +51,10 @@ class GameEngine(boardSize: Size) {
   // ---    start 		private methods
 
   private def getCell(position: Position): Cell = board.getCell(position)
-  private def setCell(cell: Cell) = board.setCell(cell)
-  private def setCellValueAt(position: Position, value: Int) = setCell(new Cell(position, value))
+  private def setCell(position: Position, cell: Cell) = board.setCell(position, cell)
+  private def setCellValueAt(position: Position, value: Int) = setCell(position, new Cell(value))
 
-  private def cellIsEmpty(position: Position): Boolean = getCell(position).empty
+  private def cellIsEmpty(position: Position): Boolean = getCell(position).isEmpty
   private def cellIsNotEmpty(position: Position): Boolean = !cellIsEmpty(position)
 
   private def initializeBoard(size: Size) {
