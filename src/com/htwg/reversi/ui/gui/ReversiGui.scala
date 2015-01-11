@@ -1,19 +1,21 @@
 package com.htwg.reversi.ui.gui
 
+import java.awt.Color
+
 import scala.swing.Action
 import scala.swing.BorderPanel
 import scala.swing.Button
+import scala.swing.Dialog
 import scala.swing.FlowPanel
 import scala.swing.GridBagPanel
 import scala.swing.Label
 import scala.swing.MainFrame
 import scala.swing.SimpleSwingApplication
-import java.awt.{ Color }
-import scala.swing.Dialog
-import com.htwg.reversi.controller.GameStateChanged
+
 import com.htwg.reversi.controller.Controller
-import com.htwg.reversi.model.GameStatus;
-import com.htwg.reversi.model.Player;
+import com.htwg.reversi.controller.GameStateChanged
+import com.htwg.reversi.model.GameStatus
+import com.htwg.reversi.model.Player
 import com.htwg.reversi.model.Position
 import com.htwg.reversi.ui.ReversiUi
 
