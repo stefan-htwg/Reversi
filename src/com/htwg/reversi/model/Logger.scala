@@ -1,4 +1,4 @@
-package com.htwg
+package com.htwg.reversi.model
 
 object Logger {
   val infoHeader = "Info	-	"

@@ -1,8 +1,8 @@
 package com.htwg.test
 
 import org.specs2.mutable._
-import com.htwg.Position;
-import com.htwg.Size
+import com.htwg.reversi.model.Position;
+import com.htwg.reversi.model.Size
 
 class PositionSpec extends SpecificationWithJUnit {
   "A new Position set to 0 " should {

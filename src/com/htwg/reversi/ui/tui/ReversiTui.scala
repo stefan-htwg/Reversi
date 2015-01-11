@@ -1,6 +1,12 @@
-package com.htwg
+package com.htwg.reversi.ui.tui
 
 import scala.swing.Reactor
+import com.htwg.reversi.controller.GameStateChanged
+import com.htwg.reversi.controller.Controller
+import com.htwg.reversi.controller.BoardChanged
+import com.htwg.reversi.model.Player;
+import com.htwg.reversi.model.Position
+import com.htwg.reversi.ui.ReversiUi
 
 class ReversiTui(controller: Controller) extends Reactor with ReversiUi{
   listenTo(controller)

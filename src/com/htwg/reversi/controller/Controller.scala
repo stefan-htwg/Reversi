@@ -1,8 +1,11 @@
-package com.htwg
+package com.htwg.reversi.controller
 
 import scala.swing.Publisher
 import scala.swing.event.Event
-import scala.swing.Frame
+import com.htwg.reversi.model.GameEngine
+import com.htwg.reversi.model.Position
+import com.htwg.reversi.model.Size
+import com.htwg.reversi.model.Player;
 
 case class GameStateChanged() extends Event
 case class BoardChanged() extends Event

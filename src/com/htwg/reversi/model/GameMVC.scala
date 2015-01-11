@@ -1,4 +1,7 @@
-package com.htwg
+package com.htwg.reversi.model
+
+import com.htwg.reversi.controller.Controller
+import com.htwg.reversi.ui.gui.ReversiGui
 
 object GameMVC {
   

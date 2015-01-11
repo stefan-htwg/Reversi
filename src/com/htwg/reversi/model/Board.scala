@@ -1,4 +1,4 @@
-package com.htwg
+package com.htwg.reversi.model
 
 class Board(size: Size) {
   private val _cells = Array.ofDim[Cell](size.x, size.y)

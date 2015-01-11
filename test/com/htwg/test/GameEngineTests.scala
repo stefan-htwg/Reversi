@@ -3,9 +3,9 @@ package com.htwg.test
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import com.htwg.GameEngine
-import com.htwg.Player
-import com.htwg.Position
+import com.htwg.reversi.model.GameEngine
+import com.htwg.reversi.model.Position
+import com.htwg.reversi.model.Player;
 
 class GameEngineTests {
 

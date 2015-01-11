@@ -1,4 +1,4 @@
-package com.htwg
+package com.htwg.reversi.model
 
 class Position(val column: Integer, val row: Integer) {
   

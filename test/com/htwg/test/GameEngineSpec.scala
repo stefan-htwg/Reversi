@@ -1,10 +1,10 @@
 package com.htwg.test
 
 import org.specs2.mutable._
-import com.htwg.Position
-import com.htwg.Size
-import com.htwg.GameEngine
-import com.htwg.Player
+import com.htwg.reversi.model.Position
+import com.htwg.reversi.model.Size
+import com.htwg.reversi.model.GameEngine
+import com.htwg.reversi.model.Player
 
 class GameEngineSpec extends SpecificationWithJUnit {
   "A new game " should {
