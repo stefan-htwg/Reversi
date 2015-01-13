@@ -8,7 +8,6 @@ import com.htwg.reversi.model.Position
 import com.htwg.reversi.model.Player;
 
 class GameEngineTests {
-
   val noPlayer = 0
   var startPlayer = Player.One;
 

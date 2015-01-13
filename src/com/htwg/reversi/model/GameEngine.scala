@@ -43,6 +43,8 @@ class GameEngine(boardSize: Size) {
   def getScoreFor(player: Int) = calculateScore(player)
 
   def getCellValue(position: Position): Int = getCell(position).value
+  
+  def getGameSize: Size = boardSize
 
   override def toString = board.toString
 

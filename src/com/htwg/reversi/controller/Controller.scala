@@ -36,6 +36,8 @@ class Controller(var engine: GameEngine) extends Publisher {
   def getPlayer2Score = engine getScoreFor(Player Two)
   
   def getGameStatus = engine getGameStatus
+  
+  def getGameSize: Size = engine getGameSize
 
   override def toString = engine toString
 }

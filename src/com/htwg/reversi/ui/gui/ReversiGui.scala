@@ -1,17 +1,18 @@
 package com.htwg.reversi.ui.gui
 
 import java.awt.Color
-
 import scala.swing.Action
 import scala.swing.BorderPanel
-import scala.swing.Button
 import scala.swing.Dialog
 import scala.swing.FlowPanel
 import scala.swing.GridBagPanel
 import scala.swing.Label
 import scala.swing.MainFrame
+import scala.swing.Menu
+import scala.swing.MenuBar
+import scala.swing.MenuItem
 import scala.swing.SimpleSwingApplication
-
+import scala.swing.event.Key
 import com.htwg.reversi.controller.Controller
 import com.htwg.reversi.controller.GameStateChanged
 import com.htwg.reversi.model.GameStatus
@@ -20,17 +21,15 @@ import com.htwg.reversi.model.Position
 import com.htwg.reversi.ui.ReversiUi
 
 class ReversiGui(controller: Controller) extends SimpleSwingApplication with ReversiUi {
-
-  val width = 8
-  val height = 8
-
   listenTo(controller)
+  type dim = java.awt.Dimension
 
-  var buttons: List[Tuple2[Position, Button]] = List()
-  var currentPlayerLabel = new Label(controller.getCurrentPlayer.toString)
-  var player1Score = new Label(controller.getPlayer1Score.toString)
-  var player2Score = new Label(controller.getPlayer2Score.toString)
-  var gameStatus = new Label()
+  var buttonsExt: List[Tuple2[Position, ButtonExt]] = List()
+
+  val currentPlayerLabel = new Label(controller.getCurrentPlayer.toString)
+  val player1Score = new Label(controller.getPlayer1Score.toString)
+  val player2Score = new Label(controller.getPlayer2Score.toString)
+  val gameStatus = new Label()
 
   def run(args: Array[String]) {
     startup(args)
@@ -49,6 +48,18 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
         add(createEastArea, BorderPanel.Position.East)
         add(createPlayingField, BorderPanel.Position.Center)
       }
+
+    menuBar = new MenuBar {
+      contents += new Menu("Options") {
+        mnemonic = Key.F
+        contents += new MenuItem(Action("New") {
+          controller.reset
+          updateUI
+        })
+        contents += new MenuItem(Action("Close") { System.exit(0) })
+      }
+    }
+    size = new dim(600, 600)
     updateUI
   }
 
@@ -62,16 +73,11 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
       controller reset;
     }
 
-    buttons.foreach(item =>
-      {
-        var column = item._1.column
-        var row = item._1.row
-        var cellValue = controller.getValueAt(new Position(column, row))
-        item._2.foreground = getPlayerColor(cellValue)
-        item._2.text = if(cellValue == 0) "" else cellValue.toString
-        item._2.repaint
-      })
-    currentPlayerLabel.text = controller.getCurrentPlayer.toString
+    buttonsExt.foreach(item => {
+      item._2.redraw
+    })
+
+    currentPlayerLabel.text = getPlayerColor(controller.getCurrentPlayer)
     player1Score.text = controller.getPlayer1Score.toString
     player2Score.text = controller.getPlayer2Score.toString
     currentPlayerLabel.repaint
@@ -100,18 +106,13 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
   def createPlayingField(): GridBagPanel = {
     return new GridBagPanel {
       val gbc = new Constraints()
+      for (y <- 1 to controller.getGameSize.y; x <- 1 to controller.getGameSize.x) {
+        gbc.gridx = x
+        gbc.gridy = y
 
-      for (y <- 1 to width) {
-        for (x <- 1 to height) {
-          gbc.gridx = x
-          gbc.gridy = y
-          var button = new Button(Action(controller.getValueAt(new Position(x, y)).toString) {
-            println("Try setting cell at: X: " + x + " Y: " + y)
-            controller.setValueAt(new Position(x, y))
-          })
-          buttons = Tuple2[Position, Button](new Position(x, y), button) :: buttons
-          add(button, gbc)
-        }
+        var buttonExt = new ButtonExt(new Position(x, y), controller)
+        add(buttonExt, gbc);
+        buttonsExt = Tuple2[Position, ButtonExt](new Position(x, y), buttonExt) :: buttonsExt
       }
     }
   }
@@ -119,10 +120,12 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
   def createWestArea: GridBagPanel = {
     return new GridBagPanel {
       val gbc = new Constraints()
+      gbc.weightx=5
+      gbc.weighty=5
 
       gbc.gridx = 0
       gbc.gridy = 0
-      add(new Label("Player 1: "), gbc)
+      add(new Label("Player Red: "), gbc)
 
       gbc.gridx = 0
       gbc.gridy = 1
@@ -136,7 +139,7 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
 
       gbc.gridx = 0
       gbc.gridy = 0
-      add(new Label("Player 2: "), gbc)
+      add(new Label("Player Blue: "), gbc)
 
       gbc.gridx = 0
       gbc.gridy = 1
@@ -144,5 +147,5 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
     }
   }
 
-  def getPlayerColor(cellValue: Integer) = if (cellValue == Player.One) Color.red else if (cellValue == Player.Two) Color.blue else Color.black
+  def getPlayerColor(cellValue: Integer) = if (cellValue == Player.One) "Red" else if (cellValue == Player.Two) "Blue" else ""
 }
