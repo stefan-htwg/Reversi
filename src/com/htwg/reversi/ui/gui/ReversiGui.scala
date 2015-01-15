@@ -120,9 +120,7 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
   def createWestArea: GridBagPanel = {
     return new GridBagPanel {
       val gbc = new Constraints()
-      gbc.weightx=5
-      gbc.weighty=5
-
+      
       gbc.gridx = 0
       gbc.gridy = 0
       add(new Label("Player Red: "), gbc)
