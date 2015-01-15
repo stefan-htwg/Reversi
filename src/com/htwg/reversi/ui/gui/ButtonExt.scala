@@ -16,9 +16,7 @@ class ButtonExt(position: Position, controller: Controller) extends FlowPanel {
   init
 
   reactions += {
-    case ButtonClicked(source) =>
-      println("Try setting cell at: Column: " + position.column + " Row: " + position.row)
-      controller.setValueAt(position)
+    case ButtonClicked(source) => {controller.setValueAt(position)}
   }
 
   def redraw: Unit = {
@@ -31,7 +29,7 @@ class ButtonExt(position: Position, controller: Controller) extends FlowPanel {
     }
 
     val cellButton = new Button {
-      text = "set"
+      text = ""
       preferredSize = new Dimension(40, 40)
       background = getPlayerColor(controller getValueAt (position))
     }

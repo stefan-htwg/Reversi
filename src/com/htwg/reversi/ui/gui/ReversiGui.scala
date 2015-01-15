@@ -76,7 +76,6 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
     buttonsExt.foreach(item => {
       item._2.redraw
     })
-
     currentPlayerLabel.text = getPlayerColor(controller.getCurrentPlayer)
     player1Score.text = controller.getPlayer1Score.toString
     player2Score.text = controller.getPlayer2Score.toString
@@ -120,7 +119,7 @@ class ReversiGui(controller: Controller) extends SimpleSwingApplication with Rev
   def createWestArea: GridBagPanel = {
     return new GridBagPanel {
       val gbc = new Constraints()
-      
+
       gbc.gridx = 0
       gbc.gridy = 0
       add(new Label("Player Red: "), gbc)
