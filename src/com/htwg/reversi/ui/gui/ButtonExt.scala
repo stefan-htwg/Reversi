@@ -24,7 +24,6 @@ class ButtonExt(position: Position, controller: Controller) extends FlowPanel {
 
     if (controller.getValueAt(position) != 0) {
       background = getPlayerColor(controller getValueAt (position))
-      repaint
       return
     }
 

@@ -43,7 +43,7 @@ class GameEngine(boardSize: Size) {
   def getScoreFor(player: Int) = calculateScore(player)
 
   def getCellValue(position: Position): Int = getCell(position).value
-  
+
   def getGameSize: Size = boardSize
 
   override def toString = board.toString
@@ -123,7 +123,7 @@ class GameEngine(boardSize: Size) {
 
     if (!canCapture(position, player)) return false
 
-    Logger.info("Is a valid move at: Column: " + position.column + " Row: " + position.row + ". For Player: " + currentPlayer + ".")
+    //Logger.info("Is a valid move at: Column: " + position.column + " Row: " + position.row + ". For Player: " + currentPlayer + ".")
     return true;
   }
   private def isNotAValidMove(position: Position, player: Int): Boolean = !isValidMove(position, player)
@@ -140,6 +140,7 @@ class GameEngine(boardSize: Size) {
   private def prepareNextMove() {
     if (gameIsOver) {
       gameStatus = GameStatus.GameOver
+      Logger.info("game is over")
       return
     }
 
@@ -151,7 +152,7 @@ class GameEngine(boardSize: Size) {
       Logger.info("computers move: ")
       doComputersMove
     } else {
-      Logger.info("nextMove: " + currentPlayer)
+      Logger.info("The next move is up to player: " + currentPlayer)
     }
   }
 
